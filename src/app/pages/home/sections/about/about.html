@@ -1,0 +1,98 @@
+<section class="about section section-alt" aria-labelledby="about-title">
+  <div class="container">
+    <div class="about__grid">
+
+      <!-- Image column -->
+      <div class="about__visual aos-left">
+        <div class="about__img-wrap">
+          <img
+            src="images/rogzrbass1.jpeg"
+            alt="Mukendi Kadiayi Roger Bass tenant sa guitare basse"
+            class="about__img"
+            loading="lazy"
+            width="480"
+            height="640"
+          />
+          <div class="about__img-badge">
+            <span class="about__img-badge-year">2008</span>
+            <span class="about__img-badge-label">Début de la guitare</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Text column -->
+      <div class="about__text aos-right">
+        <p class="section-badge">À Propos de Moi</p>
+        <h2 id="about-title" class="section-title">
+          Passion, <span>Foi</span> & Musique
+        </h2>
+        <div class="section-divider">
+          <span class="section-divider__line"></span>
+          <span class="section-divider__dot"></span>
+          <span class="section-divider__line"></span>
+        </div>
+
+        <div class="about__bio">
+          <p>
+            Je m'appelle <strong>Mukendi Kadiayi Roger Bass</strong>, né le
+            <strong>25 décembre 1990</strong> à Mbujimayi, originaire de la province du
+            Kasaï-Oriental, District de Miabi, territoire de Kabeya-Kamuanga.
+          </p>
+          <p>
+            Fils aîné d'une famille de dix enfants, je suis marié depuis 2016 à
+            <strong>Madame Joëlle Nzeba Kayemba</strong>, avec qui nous avons trois enfants :
+            Kadiayi Albert, Mfunyi Alpha et Kayemba Alvira.
+          </p>
+          <p>
+            À travers mes compositions et mes performances, je cherche à transmettre des
+            émotions profondes et à partager une énergie authentique. Mon style se nourrit
+            de diverses influences, mêlant tradition et modernité, pour créer une identité
+            musicale unique.
+          </p>
+        </div>
+
+        <!-- Academic & skills -->
+        <ul class="about__highlights">
+          <li>
+            <span class="about__highlight-icon">🎓</span>
+            <div>
+              <strong>Licence en Sciences commerciales et administratives</strong>
+              <span>ISP Mbujimayi</span>
+            </div>
+          </li>
+          <li>
+            <span class="about__highlight-icon">🎓</span>
+            <div>
+              <strong>Graduat en Mathématiques et Informatique</strong>
+              <span>ISTIA Mbujimayi</span>
+            </div>
+          </li>
+          <li>
+            <span class="about__highlight-icon">🎸</span>
+            <div>
+              <strong>Guitariste depuis 2008</strong>
+              <span>Accompagnement · Solo · Basse · Synthétiseur</span>
+            </div>
+          </li>
+          <li>
+            <span class="about__highlight-icon">✝️</span>
+            <div>
+              <strong>Chrétien engagé</strong>
+              <span>Art au service de valeurs spirituelles et humaines</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Stats row -->
+    <div class="about__stats aos">
+      @for (stat of stats; track stat.label) {
+        <div class="about__stat">
+          <span class="about__stat-value">{{ stat.value }}</span>
+          <span class="about__stat-label">{{ stat.label }}</span>
+        </div>
+      }
+    </div>
+  </div>
+</section>

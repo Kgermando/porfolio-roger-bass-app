@@ -1,0 +1,83 @@
+<section class="agenda section" aria-labelledby="agenda-title">
+  <div class="container">
+    <div class="agenda__header aos">
+      <p class="section-badge">Agenda</p>
+      <h2 id="agenda-title" class="section-title">
+        Concerts & <span>Événements</span>
+      </h2>
+      <div class="section-divider">
+        <span class="section-divider__line"></span>
+        <span class="section-divider__dot"></span>
+        <span class="section-divider__line"></span>
+      </div>
+      <p class="section-subtitle">
+        Retrouvez Roger Bass en concert et lors d'événements à venir.
+      </p>
+    </div>
+
+    <!-- Loading state -->
+    @if (loading()) {
+      <div class="agenda__loading" aria-live="polite" aria-busy="true">
+        <div class="agenda__spinner" aria-hidden="true"></div>
+        <p>Chargement des événements...</p>
+      </div>
+    }
+
+    <!-- Events list -->
+    @if (!loading() && !error() && events().length > 0) {
+      <div class="agenda__list">
+        @for (event of events(); track event.ID) {
+          <article class="agenda__card aos">
+            <div class="agenda__date">
+              <span class="agenda__day">{{ event.date | date:'d' }}</span>
+              <span class="agenda__month">{{ event.date | date:'MMM' : '' : 'fr' }}</span>
+              <span class="agenda__year">{{ event.date | date:'yyyy' }}</span>
+            </div>
+            <div class="agenda__info">
+              <h3 class="agenda__title">{{ event.title }}</h3>
+              @if (event.location) {
+                <p class="agenda__location">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+                  </svg>
+                  {{ event.location }}
+                </p>
+              }
+              @if (event.description) {
+                <p class="agenda__desc">{{ event.description }}</p>
+              }
+            </div>
+            <div class="agenda__badge">À venir</div>
+          </article>
+        }
+      </div>
+    }
+
+    <!-- Empty state -->
+    @if (!loading() && !error() && events().length === 0) {
+      <div class="agenda__empty aos">
+        <div class="agenda__empty-icon" aria-hidden="true">🎸</div>
+        <h3>Aucun événement planifié pour le moment</h3>
+        <p>
+          Restez connectés sur les réseaux sociaux pour être informés des prochains
+          concerts et événements.
+        </p>
+        <div class="agenda__socials">
+          <a href="https://www.facebook.com/rogerbass.mukendikadiayi" target="_blank" rel="noopener noreferrer" class="btn btn-outline">
+            Suivre sur Facebook
+          </a>
+          <a href="https://youtube.com/@rogerbassmukendi4992" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
+            S'abonner sur YouTube
+          </a>
+        </div>
+      </div>
+    }
+
+    <!-- Error state -->
+    @if (error()) {
+      <div class="agenda__error" role="alert">
+        <p>Impossible de charger les événements. Veuillez réessayer plus tard.</p>
+      </div>
+    }
+  </div>
+</section>

@@ -1,0 +1,136 @@
+@use '../admin-shared' as *;
+
+$gold: #d4a017;
+$border: rgba(212, 160, 23, 0.15);
+$card2: #1c1208;
+$text: #f5e6c8;
+$secondary: #c4a882;
+
+.messages-badge {
+  display: inline-block;
+  background: $gold;
+  color: #0a0603;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 0.15rem 0.5rem;
+  border-radius: 50px;
+  margin-left: 0.5rem;
+  vertical-align: middle;
+}
+
+.messages-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.messages-item {
+  background: #120a05;
+  border: 1px solid $border;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: border-color 0.2s;
+
+  &.unread {
+    border-left: 3px solid $gold;
+  }
+
+  &.expanded {
+    border-color: rgba(212, 160, 23, 0.35);
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0.9rem 1.25rem;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    gap: 1rem;
+  }
+
+  &__meta {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    min-width: 0;
+  }
+
+  &__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: $gold;
+    flex-shrink: 0;
+  }
+
+  &__name {
+    font-size: 0.9rem;
+    color: $text;
+    white-space: nowrap;
+  }
+
+  &__email {
+    font-size: 0.8rem;
+  }
+
+  &__subject {
+    font-size: 0.78rem;
+    color: $secondary;
+    background: $card2;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+  }
+
+  &__right {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-shrink: 0;
+  }
+
+  &__date { font-size: 0.75rem; }
+
+  &__chevron { font-size: 0.65rem; color: $secondary; }
+
+  &__body {
+    padding: 0 1.25rem 1.25rem;
+    border-top: 1px solid $border;
+  }
+
+  &__text {
+    font-size: 0.9rem;
+    color: $text;
+    line-height: 1.7;
+    white-space: pre-wrap;
+    margin: 1rem 0 0.75rem;
+  }
+
+  &__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+
+    .muted { font-size: 0.8rem; }
+  }
+
+  &__actions {
+    display: flex;
+    gap: 0.5rem;
+
+    a.admin-btn { text-decoration: none; }
+  }
+}
+
+.muted { color: #7a6045 !important; }

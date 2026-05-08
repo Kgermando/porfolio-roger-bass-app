@@ -1,0 +1,133 @@
+import { Component, inject, OnInit, signal, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { ApiService, Work, WorksPage } from '../../../../core/services/api.service';
+
+type Category = 'all' | 'performances' | 'tutoriels' | 'compositions';
+
+@Component({
+  selector: 'app-works',
+  templateUrl: './works.html',
+  styleUrl: './works.scss',
+})
+export class WorksSection implements OnInit {
+  private api = inject(ApiService);
+  private sanitizer = inject(DomSanitizer);
+  private platformId = inject(PLATFORM_ID);
+
+  works = signal<Work[]>([]);
+  loading = signal(true);
+  error = signal(false);
+  activeCategory = signal<Category>('all');
+  activeVideoId = signal<string | null>(null);
+
+  // Pagination
+  readonly limit = 6;
+  page = signal(1);
+  totalPages = signal(1);
+  total = signal(0);
+
+  categories: { id: Category; label: string }[] = [
+    { id: 'all', label: 'Tous' },
+    { id: 'performances', label: 'Performances' },
+    { id: 'tutoriels', label: 'Tutoriels' },
+    { id: 'compositions', label: 'Compositions' },
+  ];
+
+  ngOnInit(): void {
+    this.loadWorks();
+  }
+
+  loadWorks(category?: Category, page = 1): void {
+    this.loading.set(true);
+    this.error.set(false);
+    this.api.getWorks(category, page, this.limit).subscribe({
+      next: (res: WorksPage) => {
+        this.works.set(res.data ?? []);
+        this.total.set(res.total ?? 0);
+        this.totalPages.set(res.pages ?? 1);
+        this.page.set(res.page ?? 1);
+        this.loading.set(false);
+      },
+      error: () => { this.error.set(true); this.loading.set(false); },
+    });
+  }
+
+  setCategory(cat: Category): void {
+    this.activeCategory.set(cat);
+    this.loadWorks(cat === 'all' ? undefined : cat, 1);
+  }
+
+  goToPage(p: number): void {
+    if (p < 1 || p > this.totalPages()) return;
+    const cat = this.activeCategory();
+    this.loadWorks(cat === 'all' ? undefined : cat, p);
+    // Scroll to section top
+    if (isPlatformBrowser(this.platformId)) {
+      document.getElementById('oeuvres')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+
+  get pageNumbers(): number[] {
+    const total = this.totalPages();
+    const current = this.page();
+    const delta = 2;
+    const range: number[] = [];
+    for (let i = Math.max(1, current - delta); i <= Math.min(total, current + delta); i++) {
+      range.push(i);
+    }
+    return range;
+  }
+
+  /** Extracts the YouTube video ID from a URL, or null if not a video URL */
+  getYouTubeId(url: string): string | null {
+    if (!url) return null;
+    const patterns = [
+      /[?&]v=([a-zA-Z0-9_-]{11})/,
+      /youtu\.be\/([a-zA-Z0-9_-]{11})/,
+      /\/embed\/([a-zA-Z0-9_-]{11})/,
+    ];
+    for (const pattern of patterns) {
+      const match = url.match(pattern);
+      if (match) return match[1];
+    }
+    return null;
+  }
+
+  getThumbnailUrl(url: string): string {
+    const id = this.getYouTubeId(url);
+    // maxresdefault (1280×720) — best quality; onerror in template falls back to hqdefault
+    return id ? `https://img.youtube.com/vi/${id}/maxresdefault.jpg` : '';
+  }
+
+  onThumbError(img: HTMLImageElement, url: string): void {
+    const id = this.getYouTubeId(url);
+    if (id && !img.src.includes('hqdefault')) {
+      img.src = `https://img.youtube.com/vi/${id}/hqdefault.jpg`;
+    } else {
+      img.classList.add('works__thumb-fallback');
+      img.removeAttribute('src');
+    }
+  }
+
+  getSafeEmbedUrl(videoId: string): SafeResourceUrl {
+    return this.sanitizer.bypassSecurityTrustResourceUrl(
+      `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1`,
+    );
+  }
+
+  playVideo(url: string): void {
+    const id = this.getYouTubeId(url);
+    if (id && isPlatformBrowser(this.platformId)) {
+      this.activeVideoId.set(id);
+      document.body.style.overflow = 'hidden';
+    }
+  }
+
+  closeVideo(): void {
+    this.activeVideoId.set(null);
+    if (isPlatformBrowser(this.platformId)) {
+      document.body.style.overflow = '';
+    }
+  }
+}

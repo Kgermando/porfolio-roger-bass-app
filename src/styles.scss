@@ -1,1 +1,347 @@
-/* You can add global styles to this file, and also import other style files */
+// ================================================================
+// Roger Bass Portfolio — Global Styles
+// Theme: Warm golden aesthetic inspired by the artist's imagery
+// ================================================================
+
+// ── CSS Custom Properties ───────────────────────────────────────
+:root {
+  --rb-gold: #d4a017;
+  --rb-gold-light: #f0c84a;
+  --rb-gold-dark: #a07810;
+  --rb-amber: #e8771a;
+  --rb-bg-darkest: #080402;
+  --rb-bg-dark: #120a05;
+  --rb-bg-surface: #1c1208;
+  --rb-bg-card: #271a0b;
+  --rb-bg-card-hover: #321f0d;
+  --rb-text: #f5e6c8;
+  --rb-text-secondary: #c4a882;
+  --rb-text-muted: #8b6a40;
+  --rb-border: #3a2010;
+  --rb-border-light: #4f2e16;
+  --rb-shadow: rgba(0, 0, 0, 0.7);
+  --rb-shadow-gold: rgba(212, 160, 23, 0.25);
+  --font-heading: 'Playfair Display', Georgia, serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+  --section-padding: 5rem 0;
+  --container-max: 1200px;
+  --container-pad: 1.5rem;
+  --transition: 0.3s ease;
+}
+
+// ── Reset ────────────────────────────────────────────────────────
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--rb-bg-dark);
+  color: var(--rb-text);
+  line-height: 1.75;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: color var(--transition);
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+// ── Typography ───────────────────────────────────────────────────
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-heading);
+  line-height: 1.2;
+}
+
+// ── Layout ───────────────────────────────────────────────────────
+.container {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 var(--container-pad);
+}
+
+.section {
+  padding: var(--section-padding);
+}
+
+.section-alt {
+  background-color: var(--rb-bg-surface);
+}
+
+// ── Section Heading ──────────────────────────────────────────────
+.section-badge {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--rb-gold);
+  margin-bottom: 0.75rem;
+}
+
+.section-title {
+  font-family: var(--font-heading);
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  font-weight: 900;
+  color: var(--rb-text);
+  margin-bottom: 1rem;
+
+  span {
+    color: var(--rb-gold);
+  }
+}
+
+.section-subtitle {
+  color: var(--rb-text-secondary);
+  font-size: 1.05rem;
+  line-height: 1.8;
+  max-width: 620px;
+}
+
+.section-divider {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 1.25rem 0 3rem;
+
+  &__line {
+    flex: 1;
+    height: 1px;
+    background: var(--rb-border);
+    max-width: 60px;
+  }
+
+  &__dot {
+    width: 10px;
+    height: 10px;
+    background: var(--rb-gold);
+    border-radius: 50%;
+    box-shadow: 0 0 8px var(--rb-shadow-gold);
+  }
+}
+
+// ── Buttons ──────────────────────────────────────────────────────
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.875rem 2rem;
+  border-radius: 3px;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.875rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  border: none;
+  transition: all var(--transition);
+  white-space: nowrap;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--rb-gold) 0%, var(--rb-amber) 100%);
+  color: #0a0603;
+  box-shadow: 0 4px 20px var(--rb-shadow-gold);
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(212, 160, 23, 0.4);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--rb-gold);
+  border: 1.5px solid var(--rb-gold);
+
+  &:hover {
+    background: var(--rb-gold);
+    color: #0a0603;
+    transform: translateY(-2px);
+  }
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+// ── Cards ────────────────────────────────────────────────────────
+.card {
+  background: var(--rb-bg-card);
+  border: 1px solid var(--rb-border);
+  border-radius: 8px;
+  padding: 2rem;
+  transition: all var(--transition);
+
+  &:hover {
+    border-color: var(--rb-gold);
+    background: var(--rb-bg-card-hover);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+    transform: translateY(-4px);
+  }
+}
+
+// ── Form ─────────────────────────────────────────────────────────
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 1.25rem;
+
+  label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--rb-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+  }
+
+  input,
+  textarea,
+  select {
+    background: var(--rb-bg-card);
+    border: 1.5px solid var(--rb-border);
+    border-radius: 4px;
+    padding: 0.875rem 1rem;
+    color: var(--rb-text);
+    font-family: var(--font-body);
+    font-size: 1rem;
+    transition: border-color var(--transition), box-shadow var(--transition);
+    width: 100%;
+    outline: none;
+
+    &::placeholder {
+      color: var(--rb-text-muted);
+    }
+
+    &:focus {
+      border-color: var(--rb-gold);
+      box-shadow: 0 0 0 3px rgba(212, 160, 23, 0.12);
+    }
+
+    &.ng-invalid.ng-touched {
+      border-color: #e05252;
+    }
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 130px;
+  }
+
+  .field-error {
+    font-size: 0.78rem;
+    color: #e05252;
+  }
+}
+
+// ── Scroll Animations ────────────────────────────────────────────
+.aos {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+
+  &.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.aos-left {
+  opacity: 0;
+  transform: translateX(-36px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+
+  &.visible {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.aos-right {
+  opacity: 0;
+  transform: translateX(36px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+
+  &.visible {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+// ── Animations ───────────────────────────────────────────────────
+@keyframes waveBar {
+  0%, 100% { transform: scaleY(0.4); }
+  50% { transform: scaleY(1); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+// ── Scrollbar ────────────────────────────────────────────────────
+::-webkit-scrollbar {
+  width: 7px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--rb-bg-darkest);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--rb-border-light);
+  border-radius: 4px;
+
+  &:hover {
+    background: var(--rb-gold-dark);
+  }
+}
+
+// ── Selection ────────────────────────────────────────────────────
+::selection {
+  background: var(--rb-gold);
+  color: #0a0603;
+}

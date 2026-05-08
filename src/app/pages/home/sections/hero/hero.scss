@@ -1,0 +1,208 @@
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+
+  &__bg {
+    position: absolute;
+    inset: 0;
+    background-image: url('/images/rogerbass2.jpeg');
+    background-size: cover;
+    background-position: center top;
+    background-repeat: no-repeat;
+    transform: scale(1.05);
+    transition: transform 0.1s linear;
+  }
+
+  &__overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      135deg,
+      rgba(8, 4, 2, 0.88) 0%,
+      rgba(18, 10, 5, 0.75) 50%,
+      rgba(8, 4, 2, 0.82) 100%
+    );
+  }
+
+  &__content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    padding: 2rem var(--container-pad);
+    max-width: 860px;
+    animation: slideUp 1s ease both;
+  }
+
+  &__eyebrow {
+    font-size: 0.875rem;
+    font-weight: 500;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--rb-gold);
+    margin-bottom: 1rem;
+    opacity: 0.9;
+  }
+
+  &__name {
+    font-family: var(--font-heading);
+    margin-bottom: 1rem;
+
+    &-first {
+      display: block;
+      font-size: clamp(1.75rem, 4vw, 2.5rem);
+      font-weight: 400;
+      color: var(--rb-text);
+      letter-spacing: 6px;
+      text-transform: uppercase;
+    }
+
+    &-last {
+      display: block;
+      font-size: clamp(3.5rem, 9vw, 6.5rem);
+      font-weight: 900;
+      color: var(--rb-text);
+      line-height: 1;
+      margin-top: 0.25rem;
+
+      em {
+        font-style: italic;
+        color: var(--rb-gold);
+        text-shadow: 0 0 40px rgba(212, 160, 23, 0.5);
+      }
+    }
+  }
+
+  &__tagline {
+    font-family: var(--font-heading);
+    font-style: italic;
+    font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+    color: var(--rb-text-secondary);
+    margin-bottom: 1.5rem;
+  }
+
+  &__skills {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--rb-text-muted);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 2.5rem;
+  }
+
+  &__dot {
+    color: var(--rb-gold);
+    font-weight: 700;
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 2.5rem;
+  }
+
+  &__socials {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+  }
+
+  &__social {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border: 1px solid rgba(212, 160, 23, 0.35);
+    border-radius: 50%;
+    color: var(--rb-text-secondary);
+    transition: all 0.3s ease;
+
+    &:hover {
+      border-color: var(--rb-gold);
+      color: var(--rb-gold);
+      background: rgba(212, 160, 23, 0.1);
+      transform: translateY(-3px);
+    }
+  }
+
+  // Music wave visualizer
+  &__wave-viz {
+    position: absolute;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    z-index: 2;
+  }
+
+  &__wave-bar {
+    display: block;
+    width: 3px;
+    height: 20px;
+    background: var(--rb-gold);
+    border-radius: 2px;
+    opacity: 0.6;
+    animation: waveBar 1.2s ease-in-out infinite;
+  }
+
+  // Scroll indicator
+  &__scroll-btn {
+    position: absolute;
+    bottom: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--rb-text-muted);
+    z-index: 2;
+    transition: color var(--transition);
+
+    &:hover {
+      color: var(--rb-gold);
+    }
+  }
+
+  &__scroll-mouse {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    width: 24px;
+    height: 38px;
+    border: 2px solid currentColor;
+    border-radius: 12px;
+    padding-top: 6px;
+  }
+
+  &__scroll-dot {
+    width: 4px;
+    height: 8px;
+    background: currentColor;
+    border-radius: 2px;
+    animation: bounce 1.5s ease infinite;
+  }
+
+  &__scroll-text {
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+}

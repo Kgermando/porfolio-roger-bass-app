@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+
+  <!-- Page d'accueil — priorité maximale -->
+  <url>
+    <loc>https://rogerbass.com/</loc>
+    <lastmod>2026-05-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://rogerbass.com/images/rogerbass2.jpeg</image:loc>
+      <image:title>Mukendi Kadiayi Roger Bass – Guitariste Professionnel</image:title>
+      <image:caption>Portrait de Roger Bass, guitariste professionnel depuis 2008</image:caption>
+    </image:image>
+  </url>
+
+</urlset>

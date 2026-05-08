@@ -1,0 +1,56 @@
+<div class="login-page">
+  <div class="login-card">
+    <div class="login-card__brand">
+      <div class="login-card__logo" aria-hidden="true">🎸</div>
+      <h1 class="login-card__title">Roger Bass</h1>
+      <p class="login-card__subtitle">Administration</p>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="submit()" class="login-card__form" novalidate>
+      @if (errorMsg()) {
+        <div class="login-card__error" role="alert">{{ errorMsg() }}</div>
+      }
+
+      <div class="form-group">
+        <label for="username">Identifiant</label>
+        <input
+          id="username"
+          type="text"
+          formControlName="username"
+          placeholder="rogerbass"
+          autocomplete="username"
+          [attr.aria-invalid]="form.controls.username.invalid && form.controls.username.touched"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Mot de passe</label>
+        <input
+          id="password"
+          type="password"
+          formControlName="password"
+          placeholder="••••••••"
+          autocomplete="current-password"
+          [attr.aria-invalid]="form.controls.password.invalid && form.controls.password.touched"
+        />
+      </div>
+
+      <button
+        type="submit"
+        class="login-card__btn"
+        [disabled]="form.invalid || loading()"
+      >
+        @if (loading()) {
+          <span class="spinner" aria-hidden="true"></span>
+          Connexion...
+        } @else {
+          Se connecter
+        }
+      </button>
+    </form>
+
+    <p class="login-card__back">
+      <a href="/">← Retour au portfolio</a>
+    </p>
+  </div>
+</div>

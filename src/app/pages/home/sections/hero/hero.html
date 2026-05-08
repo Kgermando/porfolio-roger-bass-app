@@ -1,0 +1,78 @@
+<section class="hero" aria-label="Présentation de Roger Bass">
+  <!-- Background image -->
+  <div class="hero__bg" role="img" aria-label="Roger Bass jouant de la guitare"></div>
+  <div class="hero__overlay" aria-hidden="true"></div>
+
+  <!-- Main content -->
+  <div class="hero__content">
+    <p class="hero__eyebrow">Bienvenue dans l'univers musical de</p>
+
+    <h1 class="hero__name">
+      <span class="hero__name-first">Mukendi Kadiayi</span>
+      <span class="hero__name-last">Roger <em>Bass</em></span>
+    </h1>
+
+    <p class="hero__tagline">"Le guitariste de tous les temps"</p>
+
+    <div class="hero__skills">
+      <span>Guitare Solo</span>
+      <span class="hero__dot" aria-hidden="true">·</span>
+      <span>Accompagnement</span>
+      <span class="hero__dot" aria-hidden="true">·</span>
+      <span>Basse</span>
+      <span class="hero__dot" aria-hidden="true">·</span>
+      <span>Synthétiseur</span>
+    </div>
+
+    <div class="hero__actions">
+      <button class="btn btn-primary" (click)="scrollTo('oeuvres')" type="button">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <polygon points="5,3 19,12 5,21"/>
+        </svg>
+        Découvrir mes œuvres
+      </button>
+      <button class="btn btn-outline" (click)="scrollTo('contact')" type="button">
+        Me Contacter
+      </button>
+    </div>
+
+    <!-- Social links -->
+    <div class="hero__socials" aria-label="Réseaux sociaux">
+      <a href="https://www.facebook.com/rogerbass.mukendikadiayi" target="_blank" rel="noopener noreferrer" aria-label="Facebook" class="hero__social">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+        </svg>
+      </a>
+      <a href="https://youtube.com/@rogerbassmukendi4992" target="_blank" rel="noopener noreferrer" aria-label="YouTube" class="hero__social">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 0 0-1.95 1.96A29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58A2.78 2.78 0 0 0 3.41 19.6C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.95A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58zM10 15.5v-7l6 3.5-6 3.5z"/>
+        </svg>
+      </a>
+      <a href="https://www.instagram.com/mukendika/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" class="hero__social">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4.5"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
+        </svg>
+      </a>
+      <a href="https://vm.tiktok.com/ZS9NpTE9DswfB-y1Wqr/" target="_blank" rel="noopener noreferrer" aria-label="TikTok" class="hero__social">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V9.1a8.16 8.16 0 0 0 4.77 1.52V7.17a4.85 4.85 0 0 1-1-.48z"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+
+  <!-- Music wave visualizer -->
+  <div class="hero__wave-viz" aria-hidden="true">
+    @for (bar of waveBars; track bar) {
+      <span class="hero__wave-bar" [style.animation-delay]="(bar * 0.08) + 's'"></span>
+    }
+  </div>
+
+  <!-- Scroll indicator -->
+  <button class="hero__scroll-btn" (click)="scrollDown()" aria-label="Défiler vers le bas" type="button">
+    <span class="hero__scroll-mouse">
+      <span class="hero__scroll-dot"></span>
+    </span>
+    <span class="hero__scroll-text">Découvrir</span>
+  </button>
+</section>

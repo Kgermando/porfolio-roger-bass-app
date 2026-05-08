@@ -1,0 +1,100 @@
+<div class="admin-page">
+  <div class="admin-page__header">
+    <div>
+      <h2 class="admin-page__title">Galerie Photos</h2>
+      <p class="admin-page__sub">Gérez les photos affichées dans la section galerie</p>
+    </div>
+    <button class="admin-btn admin-btn--primary" (click)="openCreate()" type="button">
+      + Ajouter une photo
+    </button>
+  </div>
+
+  @if (successMsg()) { <div class="admin-toast admin-toast--success">{{ successMsg() }}</div> }
+  @if (errorMsg()) { <div class="admin-toast admin-toast--error" role="alert">{{ errorMsg() }}</div> }
+
+  @if (showForm()) {
+    <div class="admin-form-card">
+      <h3 class="admin-form-card__title">
+        {{ editingPhoto() ? 'Modifier la photo' : 'Nouvelle photo' }}
+      </h3>
+
+      <form [formGroup]="form" (ngSubmit)="save()" class="admin-form" novalidate>
+        <div class="admin-field">
+          <label for="g-src">URL ou chemin de l'image <span aria-hidden="true">*</span></label>
+          <input
+            id="g-src" type="text" formControlName="src"
+            placeholder="images/rogerbass2.jpeg  ou  https://example.com/photo.jpg"
+          />
+          <small class="admin-field__hint">
+            Images locales : placez-les dans <code>public/images/</code> et utilisez le chemin relatif.
+          </small>
+        </div>
+
+        <div class="admin-form__row">
+          <div class="admin-field">
+            <label for="g-alt">Texte alternatif (accessibilité)</label>
+            <input id="g-alt" type="text" formControlName="alt" placeholder="Description de l'image" />
+          </div>
+          <div class="admin-field">
+            <label for="g-caption">Légende affichée</label>
+            <input id="g-caption" type="text" formControlName="caption" placeholder="Ex : Roger Bass en concert" />
+          </div>
+        </div>
+
+        <div class="admin-form__row admin-form__row--small">
+          <div class="admin-field">
+            <label for="g-order">Ordre d'affichage</label>
+            <input id="g-order" type="number" formControlName="sort_order" min="0" />
+          </div>
+          <div class="admin-field admin-field--check">
+            <label>
+              <input type="checkbox" formControlName="is_active" />
+              <span>Visible sur le portfolio</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Preview -->
+        @if (form.controls.src.value) {
+          <div class="gallery-admin__preview">
+            <img [src]="form.controls.src.value" alt="Aperçu" loading="lazy" />
+          </div>
+        }
+
+        <div class="admin-form__actions">
+          <button type="button" class="admin-btn admin-btn--ghost" (click)="cancel()">Annuler</button>
+          <button type="submit" class="admin-btn admin-btn--primary" [disabled]="form.invalid || saving()">
+            {{ saving() ? 'Enregistrement...' : 'Enregistrer' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  }
+
+  @if (loading()) {
+    <div class="admin-loading">Chargement...</div>
+  } @else if (photos().length === 0) {
+    <div class="admin-empty">Aucune photo. Cliquez sur « Ajouter » pour commencer.</div>
+  } @else {
+    <div class="gallery-admin__grid">
+      @for (photo of photos(); track photo.ID) {
+        <div class="gallery-admin__card" [class.inactive]="!photo.is_active">
+          <div class="gallery-admin__thumb">
+            <img [src]="photo.src" [alt]="photo.alt" loading="lazy" />
+            @if (!photo.is_active) {
+              <span class="gallery-admin__hidden-badge">Masqué</span>
+            }
+          </div>
+          <div class="gallery-admin__info">
+            <p class="gallery-admin__caption">{{ photo.caption || photo.alt || '—' }}</p>
+            <span class="muted">Ordre : {{ photo.sort_order }}</span>
+          </div>
+          <div class="gallery-admin__actions">
+            <button class="admin-btn admin-btn--sm admin-btn--ghost" (click)="openEdit(photo)" type="button">Modifier</button>
+            <button class="admin-btn admin-btn--sm admin-btn--danger" (click)="delete(photo)" type="button">Supprimer</button>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

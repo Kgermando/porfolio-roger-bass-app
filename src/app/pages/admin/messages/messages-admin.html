@@ -1,0 +1,70 @@
+<div class="admin-page">
+  <div class="admin-page__header">
+    <div>
+      <h2 class="admin-page__title">
+        Messages
+        @if (unread > 0) {
+          <span class="messages-badge">{{ unread }} non lu{{ unread > 1 ? 's' : '' }}</span>
+        }
+      </h2>
+      <p class="admin-page__sub">Messages reçus via le formulaire de contact du portfolio</p>
+    </div>
+  </div>
+
+  @if (errorMsg()) { <div class="admin-toast admin-toast--error" role="alert">{{ errorMsg() }}</div> }
+
+  @if (loading()) {
+    <div class="admin-loading">Chargement...</div>
+  } @else if (contacts().length === 0) {
+    <div class="admin-empty">Aucun message reçu pour le moment.</div>
+  } @else {
+    <div class="messages-list">
+      @for (msg of contacts(); track msg.ID) {
+        <div class="messages-item" [class.unread]="!msg.is_read" [class.expanded]="expanded() === msg.ID">
+          <button
+            class="messages-item__header"
+            (click)="toggleExpand(msg.ID)"
+            type="button"
+            [attr.aria-expanded]="expanded() === msg.ID"
+          >
+            <div class="messages-item__meta">
+              @if (!msg.is_read) {
+                <span class="messages-item__dot" aria-label="Non lu"></span>
+              }
+              <strong class="messages-item__name">{{ msg.name }}</strong>
+              <span class="messages-item__email muted">{{ msg.email }}</span>
+              @if (msg.subject) {
+                <span class="messages-item__subject">{{ msg.subject }}</span>
+              }
+            </div>
+            <div class="messages-item__right">
+              <span class="muted messages-item__date">{{ msg.CreatedAt | date:'dd/MM/yyyy' }}</span>
+              <span class="messages-item__chevron" aria-hidden="true">
+                {{ expanded() === msg.ID ? '▲' : '▼' }}
+              </span>
+            </div>
+          </button>
+
+          @if (expanded() === msg.ID) {
+            <div class="messages-item__body">
+              <p class="messages-item__text">{{ msg.message }}</p>
+              <div class="messages-item__footer">
+                @if (msg.phone) {
+                  <span class="muted">📞 {{ msg.phone }}</span>
+                }
+                <div class="messages-item__actions">
+                  <a [href]="'mailto:' + msg.email" class="admin-btn admin-btn--sm admin-btn--ghost">
+                    Répondre par email
+                  </a>
+                  <button class="admin-btn admin-btn--sm admin-btn--danger" (click)="delete(msg)" type="button">
+                    Supprimer
+                  </button>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  }
+</div>

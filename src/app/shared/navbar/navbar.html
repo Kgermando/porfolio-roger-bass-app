@@ -1,0 +1,44 @@
+<nav class="navbar" [class.scrolled]="isScrolled()" role="navigation" aria-label="Navigation principale">
+  <div class="navbar__container">
+    <!-- Brand -->
+    <a class="navbar__brand" (click)="scrollTo('accueil')" role="button" tabindex="0" aria-label="Roger Bass – Accueil">
+      <img src="images/logo.png" alt="Logo Roger Bass" class="navbar__logo" width="44" height="44" />
+      <span class="navbar__name">Roger <em>Bass</em></span>
+    </a>
+
+    <!-- Mobile toggle -->
+    <button
+      class="navbar__toggle"
+      (click)="toggleMenu()"
+      [attr.aria-expanded]="isOpen()"
+      aria-label="Ouvrir le menu"
+      type="button"
+    >
+      <span class="navbar__bar" [class.open]="isOpen()"></span>
+      <span class="navbar__bar" [class.open]="isOpen()"></span>
+      <span class="navbar__bar" [class.open]="isOpen()"></span>
+    </button>
+
+    <!-- Menu -->
+    <ul class="navbar__menu" [class.open]="isOpen()" role="menubar">
+      @for (item of navItems; track item.id) {
+        <li role="none">
+          <a
+            class="navbar__link"
+            (click)="scrollTo(item.id); closeMenu()"
+            role="menuitem"
+            tabindex="0"
+          >{{ item.label }}</a>
+        </li>
+      }
+      <li role="none">
+        <a
+          class="navbar__link navbar__cta btn btn-primary"
+          (click)="scrollTo('contact'); closeMenu()"
+          role="menuitem"
+          tabindex="0"
+        >Me Contacter</a>
+      </li>
+    </ul>
+  </div>
+</nav>

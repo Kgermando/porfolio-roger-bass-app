@@ -1,0 +1,56 @@
+<section class="services section section-alt" aria-labelledby="services-title">
+  <div class="container">
+    <div class="services__header aos">
+      <p class="section-badge">Services</p>
+      <h2 id="services-title" class="section-title">
+        Comment puis-je vous <span>Aider ?</span>
+      </h2>
+      <div class="section-divider">
+        <span class="section-divider__line"></span>
+        <span class="section-divider__dot"></span>
+        <span class="section-divider__line"></span>
+      </div>
+      <p class="section-subtitle">
+        Que vous souhaitiez apprendre la guitare, enregistrer votre projet musical ou
+        animer votre événement, Roger Bass est à votre disposition.
+      </p>
+    </div>
+
+    <div class="services__grid">
+      @for (service of services; track service.title; let i = $index) {
+        <article class="services__card card aos" [style.transition-delay]="(i * 0.15) + 's'">
+          <div class="services__icon" aria-hidden="true">{{ service.icon }}</div>
+          <h3 class="services__title">{{ service.title }}</h3>
+          <p class="services__desc">{{ service.desc }}</p>
+          <ul class="services__features" aria-label="Caractéristiques">
+            @for (feat of service.features; track feat) {
+              <li>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true">
+                  <polyline points="20,6 9,17 4,12"/>
+                </svg>
+                {{ feat }}
+              </li>
+            }
+          </ul>
+          <button class="services__cta btn btn-outline" (click)="scrollToContact()" type="button">
+            {{ service.cta }}
+          </button>
+        </article>
+      }
+    </div>
+
+    <!-- CTA Banner -->
+    <div class="services__banner aos">
+      <div class="services__banner-text">
+        <h3>Prêt à collaborer ensemble ?</h3>
+        <p>Contactez-moi pour discuter de votre projet musical et obtenir un devis personnalisé.</p>
+      </div>
+      <button class="btn btn-primary" (click)="scrollToContact()" type="button">
+        Prendre contact
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+          <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12,5 19,12 12,19"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</section>

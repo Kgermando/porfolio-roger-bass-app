@@ -1,0 +1,71 @@
+<section class="gallery section section-alt" aria-labelledby="gallery-title">
+  <div class="container">
+    <div class="gallery__header aos">
+      <p class="section-badge">Galerie</p>
+      <h2 id="gallery-title" class="section-title">
+        Photos & <span>Médias</span>
+      </h2>
+      <div class="section-divider">
+        <span class="section-divider__line"></span>
+        <span class="section-divider__dot"></span>
+        <span class="section-divider__line"></span>
+      </div>
+      <p class="section-subtitle">
+        Des moments capturés qui reflètent l'authenticité et la passion de Roger Bass.
+      </p>
+    </div>
+
+    <div class="gallery__grid">
+      @if (loading()) {
+        <p class="gallery__state">Chargement...</p>
+      } @else if (error()) {
+        <p class="gallery__state">Impossible de charger la galerie.</p>
+      } @else if (photos().length === 0) {
+        <p class="gallery__state">Aucune photo pour le moment.</p>
+      } @else {
+        @for (photo of photos(); track photo.ID; let i = $index) {
+          <figure class="gallery__item aos" (click)="open(i)" role="button" tabindex="0" [attr.aria-label]="'Agrandir : ' + photo.caption">
+            <img
+              [src]="photo.src"
+              [alt]="photo.alt"
+              class="gallery__img"
+              loading="lazy"
+              width="600"
+              height="800"
+            />
+            <figcaption class="gallery__caption">
+              <span>{{ photo.caption }}</span>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3m13 0h3a2 2 0 0 0 2-2v-3"/>
+              </svg>
+            </figcaption>
+          </figure>
+        }
+      }
+    </div>
+  </div>
+
+  <!-- Lightbox -->
+  @if (activeIndex() !== null) {
+    <div
+      class="gallery__lightbox"
+      (click)="close()"
+      role="dialog"
+      aria-modal="true"
+      [attr.aria-label]="'Photo : ' + photos()[activeIndex()!].caption"
+    >
+      <button class="gallery__lightbox-close" type="button" (click)="close()" aria-label="Fermer">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+      <img
+        [src]="photos()[activeIndex()!].src"
+        [alt]="photos()[activeIndex()!].alt"
+        class="gallery__lightbox-img"
+        (click)="$event.stopPropagation()"
+      />
+      <p class="gallery__lightbox-caption">{{ photos()[activeIndex()!].caption }}</p>
+    </div>
+  }
+</section>

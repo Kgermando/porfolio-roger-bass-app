@@ -1,0 +1,234 @@
+<section class="works section section-alt" aria-labelledby="works-title">
+  <div class="container">
+
+    <!-- Header -->
+    <div class="works__header aos">
+      <p class="section-badge">Mes Vidéos</p>
+      <h2 id="works-title" class="section-title">Sur <span>YouTube</span></h2>
+      <div class="section-divider">
+        <span class="section-divider__line"></span>
+        <span class="section-divider__dot"></span>
+        <span class="section-divider__line"></span>
+      </div>
+      <p class="section-subtitle">
+        Performances scéniques, tutoriels de guitare et compositions originales.
+        Abonnez-vous pour ne rien manquer.
+      </p>
+    </div>
+
+    <!-- YouTube subscribe banner -->
+    <a
+      class="works__youtube-cta aos"
+      href="https://youtube.com/@rogerbassmukendi4992?si=AxXDYdOrsPN8eYfY"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Abonnez-vous à la chaîne YouTube de Roger Bass"
+    >
+      <div class="works__yt-icon" aria-hidden="true">
+        <svg width="44" height="44" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 0 0-1.95 1.96A29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58A2.78 2.78 0 0 0 3.41 19.6C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.95A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58zM10 15.5v-7l6 3.5-6 3.5z"/>
+        </svg>
+      </div>
+      <div class="works__yt-text">
+        <strong>Roger Bass — Chaîne YouTube</strong>
+        <span>S'abonner pour découvrir tous les contenus exclusifs</span>
+      </div>
+      <div class="works__yt-arrow" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12,5 19,12 12,19"/>
+        </svg>
+      </div>
+    </a>
+
+    <!-- Category filter -->
+    <div class="works__filter" role="tablist" aria-label="Filtrer les vidéos">
+      @for (cat of categories; track cat.id) {
+        <button
+          class="works__filter-btn"
+          [class.active]="activeCategory() === cat.id"
+          (click)="setCategory(cat.id)"
+          role="tab"
+          [attr.aria-selected]="activeCategory() === cat.id"
+          type="button"
+        >{{ cat.label }}</button>
+      }
+    </div>
+
+    <!-- Loading -->
+    @if (loading()) {
+      <div class="works__loading" aria-live="polite" aria-busy="true">
+        <div class="works__spinner" aria-hidden="true"></div>
+        <p>Chargement des vidéos...</p>
+      </div>
+    }
+
+    <!-- Video grid -->
+    @if (!loading() && !error()) {
+      @if (works().length > 0) {
+        <div class="works__grid" role="tabpanel">
+          @for (work of works(); track work.ID) {
+            <article class="works__card aos">
+
+              <!-- Thumbnail with play overlay (video URL) -->
+              @if (getYouTubeId(work.link)) {
+                <button
+                  class="works__thumb"
+                  (click)="playVideo(work.link)"
+                  [attr.aria-label]="'Lire la vidéo : ' + work.title"
+                  type="button"
+                >
+                  <img
+                    [src]="getThumbnailUrl(work.link)"
+                    [alt]="work.title"
+                    loading="lazy"
+                    width="480" height="270"
+                    (error)="onThumbError($any($event.target), work.link)"
+                  />
+                  <div class="works__overlay" aria-hidden="true">
+                    <div class="works__play-btn">
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                        <polygon points="5,3 19,12 5,21"/>
+                      </svg>
+                    </div>
+                  </div>
+                  <span class="works__tag">{{ work.category }}</span>
+                </button>
+
+              <!-- Channel-only link (no video ID) -->
+              } @else {
+                <a
+                  class="works__thumb works__thumb--channel"
+                  [href]="work.link || 'https://youtube.com/@rogerbassmukendi4992'"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  [attr.aria-label]="work.title + ' — voir sur YouTube'"
+                >
+                  <div class="works__yt-placeholder" aria-hidden="true">
+                    <svg width="52" height="52" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 0 0-1.95 1.96A29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58A2.78 2.78 0 0 0 3.41 19.6C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.95A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58zM10 15.5v-7l6 3.5-6 3.5z"/>
+                    </svg>
+                    <p>Voir sur YouTube</p>
+                  </div>
+                  <span class="works__tag">{{ work.category }}</span>
+                </a>
+              }
+
+              <!-- Info below thumbnail -->
+              <div class="works__card-info">
+                <h3 class="works__card-title">{{ work.title }}</h3>
+                <p class="works__card-desc">{{ work.desc }}</p>
+              </div>
+
+            </article>
+          }
+        </div>
+
+        <!-- ── Pagination ── -->
+        @if (totalPages() > 1) {
+          <nav class="works__pagination" aria-label="Pagination des vidéos">
+            <button
+              class="works__page-btn works__page-btn--arrow"
+              (click)="goToPage(page() - 1)"
+              [disabled]="page() === 1"
+              aria-label="Page précédente"
+              type="button"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <polyline points="15,18 9,12 15,6"/>
+              </svg>
+            </button>
+
+            @if (pageNumbers[0] > 1) {
+              <button class="works__page-btn" (click)="goToPage(1)" type="button" aria-label="Page 1">1</button>
+              @if (pageNumbers[0] > 2) {
+                <span class="works__page-ellipsis">…</span>
+              }
+            }
+
+            @for (n of pageNumbers; track n) {
+              <button
+                class="works__page-btn"
+                [class.active]="n === page()"
+                (click)="goToPage(n)"
+                type="button"
+                [attr.aria-label]="'Page ' + n"
+                [attr.aria-current]="n === page() ? 'page' : null"
+              >{{ n }}</button>
+            }
+
+            @if (pageNumbers[pageNumbers.length - 1] < totalPages()) {
+              @if (pageNumbers[pageNumbers.length - 1] < totalPages() - 1) {
+                <span class="works__page-ellipsis">…</span>
+              }
+              <button class="works__page-btn" (click)="goToPage(totalPages())" type="button" [attr.aria-label]="'Page ' + totalPages()">{{ totalPages() }}</button>
+            }
+
+            <button
+              class="works__page-btn works__page-btn--arrow"
+              (click)="goToPage(page() + 1)"
+              [disabled]="page() === totalPages()"
+              aria-label="Page suivante"
+              type="button"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <polyline points="9,6 15,12 9,18"/>
+              </svg>
+            </button>
+          </nav>
+        }
+
+      } @else {
+        <div class="works__empty aos">
+          <div class="works__empty-icon" aria-hidden="true">
+            <svg width="56" height="56" viewBox="0 0 24 24" fill="currentColor" opacity="0.3">
+              <path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 0 0-1.95 1.96A29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58A2.78 2.78 0 0 0 3.41 19.6C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.95A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58zM10 15.5v-7l6 3.5-6 3.5z"/>
+            </svg>
+          </div>
+          <p>Aucune vidéo dans cette catégorie pour le moment.</p>
+        </div>
+      }
+    }
+
+    <!-- Error -->
+    @if (error()) {
+      <div class="works__error" role="alert">
+        Impossible de charger les vidéos. Veuillez réessayer plus tard.
+      </div>
+    }
+
+  </div>
+
+  <!-- ── Video modal player ── -->
+  @if (activeVideoId()) {
+    <div
+      class="works__modal"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Lecteur vidéo"
+      (click)="closeVideo()"
+    >
+      <div class="works__modal-inner" (click)="$event.stopPropagation()">
+        <button
+          class="works__modal-close"
+          (click)="closeVideo()"
+          aria-label="Fermer la vidéo"
+          type="button"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+        <div class="works__modal-player">
+          <iframe
+            [src]="getSafeEmbedUrl(activeVideoId()!)"
+            frameborder="0"
+            allow="autoplay; encrypted-media; picture-in-picture"
+            allowfullscreen
+            title="Vidéo YouTube Roger Bass"
+          ></iframe>
+        </div>
+      </div>
+    </div>
+  }
+
+</section>

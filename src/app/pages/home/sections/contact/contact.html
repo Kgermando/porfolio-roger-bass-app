@@ -1,0 +1,183 @@
+<section class="contact section" aria-labelledby="contact-title">
+  <div class="container">
+    <div class="contact__header aos">
+      <p class="section-badge">Contact</p>
+      <h2 id="contact-title" class="section-title">
+        Travaillons <span>Ensemble</span>
+      </h2>
+      <div class="section-divider">
+        <span class="section-divider__line"></span>
+        <span class="section-divider__dot"></span>
+        <span class="section-divider__line"></span>
+      </div>
+      <p class="section-subtitle">
+        Une question, un projet, une collaboration ? N'hésitez pas à me contacter !
+      </p>
+    </div>
+
+    <div class="contact__grid">
+
+      <!-- Info column -->
+      <div class="contact__info aos-left">
+        <h3 class="contact__info-title">Coordonnées</h3>
+
+        <ul class="contact__details">
+          <li class="contact__detail-item">
+            <span class="contact__detail-icon" aria-hidden="true">📞</span>
+            <div>
+              <span class="contact__detail-label">Téléphone</span>
+              <a href="tel:+243853993852" class="contact__detail-value">+243 85 399 38 52</a>
+            </div>
+          </li>
+          <li class="contact__detail-item">
+            <span class="contact__detail-icon" aria-hidden="true">✉️</span>
+            <div>
+              <span class="contact__detail-label">Email</span>
+              <a href="mailto:mukendirogerbass@gmail.com" class="contact__detail-value">
+                mukendirogerbass&#64;gmail.com
+              </a>
+            </div>
+          </li>
+          <li class="contact__detail-item">
+            <span class="contact__detail-icon" aria-hidden="true">📍</span>
+            <div>
+              <span class="contact__detail-label">Localisation</span>
+              <span class="contact__detail-value">Kinshasa, RDC</span>
+            </div>
+          </li>
+        </ul>
+
+        <h4 class="contact__social-title">Réseaux Sociaux</h4>
+        <div class="contact__socials">
+          @for (s of socials; track s.name) {
+            <a
+              [href]="s.href"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="contact__social-item"
+              [attr.aria-label]="s.name + ' : ' + s.label"
+            >
+              <span class="contact__social-icon">
+                @if (s.icon === 'facebook') {
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+                }
+                @if (s.icon === 'youtube') {
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 0 0-1.95 1.96A29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58A2.78 2.78 0 0 0 3.41 19.6C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.95A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58zM10 15.5v-7l6 3.5-6 3.5z"/></svg>
+                }
+                @if (s.icon === 'instagram') {
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4.5"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+                }
+                @if (s.icon === 'tiktok') {
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V9.1a8.16 8.16 0 0 0 4.77 1.52V7.17a4.85 4.85 0 0 1-1-.48z"/></svg>
+                }
+              </span>
+              <span class="contact__social-text">{{ s.label }}</span>
+            </a>
+          }
+        </div>
+      </div>
+
+      <!-- Form column -->
+      <div class="contact__form-wrap aos-right">
+
+        @if (isSuccess()) {
+          <div class="contact__success" role="alert">
+            <div class="contact__success-icon" aria-hidden="true">✅</div>
+            <h3>Message envoyé !</h3>
+            <p>Merci pour votre message. Je vous répondrai dans les meilleurs délais.</p>
+            <button class="btn btn-outline" (click)="resetSuccess()" type="button">
+              Envoyer un autre message
+            </button>
+          </div>
+        } @else {
+          <form [formGroup]="form" (ngSubmit)="submit()" class="contact__form" novalidate aria-label="Formulaire de contact">
+
+            <div class="contact__form-row">
+              <div class="form-group">
+                <label for="contact-name">Nom complet *</label>
+                <input
+                  id="contact-name"
+                  type="text"
+                  formControlName="name"
+                  placeholder="Votre nom"
+                  autocomplete="name"
+                />
+                @if (f['name'].invalid && f['name'].touched) {
+                  <span class="field-error" role="alert">Le nom est requis.</span>
+                }
+              </div>
+              <div class="form-group">
+                <label for="contact-email">Email *</label>
+                <input
+                  id="contact-email"
+                  type="email"
+                  formControlName="email"
+                  placeholder="votre@email.com"
+                  autocomplete="email"
+                />
+                @if (f['email'].invalid && f['email'].touched) {
+                  <span class="field-error" role="alert">Email valide requis.</span>
+                }
+              </div>
+            </div>
+
+            <div class="contact__form-row">
+              <div class="form-group">
+                <label for="contact-phone">Téléphone</label>
+                <input
+                  id="contact-phone"
+                  type="tel"
+                  formControlName="phone"
+                  placeholder="+243 ..."
+                  autocomplete="tel"
+                />
+              </div>
+              <div class="form-group">
+                <label for="contact-subject">Sujet</label>
+                <input
+                  id="contact-subject"
+                  type="text"
+                  formControlName="subject"
+                  placeholder="Ex: Cours de guitare"
+                />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="contact-message">Message *</label>
+              <textarea
+                id="contact-message"
+                formControlName="message"
+                placeholder="Décrivez votre projet ou votre demande..."
+                rows="5"
+              ></textarea>
+              @if (f['message'].invalid && f['message'].touched) {
+                <span class="field-error" role="alert">Message requis (min. 10 caractères).</span>
+              }
+            </div>
+
+            @if (errorMsg()) {
+              <div class="contact__error" role="alert">{{ errorMsg() }}</div>
+            }
+
+            <button
+              type="submit"
+              class="btn btn-primary contact__submit"
+              [disabled]="isSubmitting()"
+            >
+              @if (isSubmitting()) {
+                <span class="contact__spinner" aria-hidden="true"></span>
+                Envoi en cours...
+              } @else {
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+                  <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22,2 15,22 11,13 2,9"/>
+                </svg>
+                Envoyer le message
+              }
+            </button>
+          </form>
+        }
+      </div>
+    </div>
+  </div>
+</section>

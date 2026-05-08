@@ -1,0 +1,221 @@
+.contact {
+  &__header {
+    text-align: center;
+    margin-bottom: 3rem;
+
+    .section-subtitle {
+      margin: 0 auto;
+    }
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: 1fr 1.6fr;
+    gap: 3rem;
+    align-items: start;
+
+    @media (max-width: 900px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__info {
+    position: sticky;
+    top: 5rem;
+
+    @media (max-width: 900px) {
+      position: static;
+    }
+  }
+
+  &__info-title {
+    font-family: var(--font-heading);
+    font-size: 1.2rem;
+    color: var(--rb-text);
+    margin-bottom: 1.5rem;
+  }
+
+  &__details {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  &__detail-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 0.875rem 1rem;
+    background: var(--rb-bg-card);
+    border: 1px solid var(--rb-border);
+    border-radius: 6px;
+    transition: border-color var(--transition);
+
+    &:hover {
+      border-color: var(--rb-gold);
+    }
+
+    div {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+  }
+
+  &__detail-icon {
+    font-size: 1.3rem;
+    flex-shrink: 0;
+  }
+
+  &__detail-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--rb-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+  }
+
+  &__detail-value {
+    font-size: 0.9rem;
+    color: var(--rb-text);
+    transition: color var(--transition);
+
+    a {
+      color: var(--rb-text);
+
+      &:hover {
+        color: var(--rb-gold);
+      }
+    }
+  }
+
+  &__social-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--rb-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 0.875rem;
+  }
+
+  &__socials {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  &__social-item {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    padding: 0.625rem 1rem;
+    background: var(--rb-bg-card);
+    border: 1px solid var(--rb-border);
+    border-radius: 6px;
+    transition: all var(--transition);
+    color: var(--rb-text-secondary);
+
+    &:hover {
+      border-color: var(--rb-gold);
+      color: var(--rb-gold);
+      background: rgba(212, 160, 23, 0.06);
+    }
+  }
+
+  &__social-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    background: rgba(212, 160, 23, 0.1);
+    border-radius: 6px;
+    color: var(--rb-gold);
+    flex-shrink: 0;
+  }
+
+  &__social-text {
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+
+  // Form
+  &__form-wrap {
+    background: var(--rb-bg-card);
+    border: 1px solid var(--rb-border);
+    border-radius: 10px;
+    padding: 2.5rem;
+
+    @media (max-width: 480px) {
+      padding: 1.5rem;
+    }
+  }
+
+  &__form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 1.25rem;
+
+    @media (max-width: 600px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__submit {
+    width: 100%;
+    justify-content: center;
+    padding: 1rem;
+    font-size: 1rem;
+    margin-top: 0.5rem;
+  }
+
+  &__spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(10, 6, 3, 0.3);
+    border-top-color: #0a0603;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    flex-shrink: 0;
+  }
+
+  &__error {
+    padding: 0.875rem 1rem;
+    background: rgba(224, 82, 82, 0.08);
+    border: 1px solid rgba(224, 82, 82, 0.3);
+    border-radius: 4px;
+    color: #e05252;
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
+  }
+
+  &__success {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    text-align: center;
+    padding: 3rem 2rem;
+
+    h3 {
+      font-family: var(--font-heading);
+      font-size: 1.5rem;
+      color: var(--rb-text);
+    }
+
+    p {
+      color: var(--rb-text-secondary);
+      font-size: 0.95rem;
+    }
+  }
+
+  &__success-icon {
+    font-size: 3rem;
+  }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

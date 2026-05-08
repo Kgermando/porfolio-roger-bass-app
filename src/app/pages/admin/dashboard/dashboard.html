@@ -1,0 +1,64 @@
+<div class="admin-layout">
+  <!-- Sidebar -->
+  <aside class="admin-sidebar" [class.open]="sidebarOpen()">
+    <div class="admin-sidebar__brand">
+      <span class="admin-sidebar__logo" aria-hidden="true">🎸</span>
+      <div>
+        <strong>Roger Bass</strong>
+        <small>Administration</small>
+      </div>
+    </div>
+
+    <nav class="admin-sidebar__nav" aria-label="Navigation admin">
+      @for (item of navItems; track item.path) {
+        <a
+          [routerLink]="item.path"
+          routerLinkActive="active"
+          class="admin-sidebar__link"
+          (click)="sidebarOpen.set(false)"
+        >
+          <span class="admin-sidebar__icon" aria-hidden="true">{{ item.icon }}</span>
+          {{ item.label }}
+        </a>
+      }
+    </nav>
+
+    <div class="admin-sidebar__footer">
+      @if (auth.currentAdmin()) {
+        <p class="admin-sidebar__user">{{ auth.currentAdmin()!.full_name }}</p>
+      }
+      <button class="admin-sidebar__logout" (click)="logout()" type="button">
+        Déconnexion
+      </button>
+      <a href="/" class="admin-sidebar__portfolio" target="_blank" rel="noopener">
+        ← Portfolio public
+      </a>
+    </div>
+  </aside>
+
+  <!-- Overlay for mobile -->
+  @if (sidebarOpen()) {
+    <div class="admin-overlay" (click)="toggleSidebar()" aria-hidden="true"></div>
+  }
+
+  <!-- Main content -->
+  <div class="admin-main">
+    <header class="admin-topbar">
+      <button
+        class="admin-topbar__menu"
+        (click)="toggleSidebar()"
+        aria-label="Ouvrir le menu"
+        type="button"
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+      </button>
+      <span class="admin-topbar__title">Tableau de bord</span>
+    </header>
+
+    <main class="admin-content">
+      <router-outlet />
+    </main>
+  </div>
+</div>

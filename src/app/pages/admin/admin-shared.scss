@@ -1,0 +1,289 @@
+@use 'sass:color';
+// Shared admin UI styles — used by all admin pages
+$gold: #d4a017;
+$dark: #080402;
+$card: #120a05;
+$card2: #1c1208;
+$border: rgba(212, 160, 23, 0.15);
+$text: #f5e6c8;
+$muted-color: #7a6045;
+$secondary: #c4a882;
+
+.admin-page {
+  max-width: 1000px;
+
+  &__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  &__title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    color: $text;
+    margin: 0;
+  }
+
+  &__sub {
+    font-size: 0.8rem;
+    color: $secondary;
+    margin: 0.25rem 0 0;
+  }
+}
+
+// ── Toasts ─────────────────────────────────────────
+.admin-toast {
+  padding: 0.85rem 1.25rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  margin-bottom: 1.5rem;
+
+  &--success {
+    background: rgba(52, 199, 89, 0.1);
+    border: 1px solid rgba(52, 199, 89, 0.3);
+    color: #34c759;
+  }
+
+  &--error {
+    background: rgba(224, 82, 82, 0.1);
+    border: 1px solid rgba(224, 82, 82, 0.3);
+    color: #e05252;
+  }
+}
+
+// ── Inline form card ────────────────────────────────
+.admin-form-card {
+  background: $card2;
+  border: 1px solid $border;
+  border-radius: 10px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+
+  &__title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    color: $text;
+    margin: 0 0 1.25rem;
+  }
+}
+
+.admin-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  &__row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+
+    &--small {
+      grid-template-columns: 140px 1fr;
+    }
+
+    @media (max-width: 600px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+  }
+}
+
+.admin-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+
+  label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: $secondary;
+    letter-spacing: 0.3px;
+
+    span[aria-hidden] { color: $gold; margin-left: 2px; }
+  }
+
+  input:not([type='checkbox']),
+  select,
+  textarea {
+    background: $card;
+    border: 1px solid $border;
+    border-radius: 6px;
+    padding: 0.65rem 0.9rem;
+    color: $text;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.2s;
+    font-family: inherit;
+    resize: vertical;
+
+    &::placeholder { color: #4a3018; }
+    &:focus { border-color: $gold; }
+
+    option { background: $card; }
+  }
+
+  &--check {
+    justify-content: flex-end;
+
+    label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.85rem;
+      cursor: pointer;
+
+      input[type='checkbox'] {
+        width: 16px;
+        height: 16px;
+        accent-color: $gold;
+        cursor: pointer;
+      }
+
+      span { color: $text; font-weight: 400; }
+    }
+  }
+}
+
+// ── Buttons ────────────────────────────────────────
+.admin-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.6rem 1.25rem;
+  border-radius: 7px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: background 0.2s, opacity 0.2s;
+  white-space: nowrap;
+
+  &:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  &--primary {
+    background: $gold;
+    color: #0a0603;
+
+    &:hover:not(:disabled) { background: color.adjust($gold, $lightness: 8%); }
+  }
+
+  &--ghost {
+    background: transparent;
+    border: 1.5px solid $border;
+    color: $secondary;
+
+    &:hover:not(:disabled) { border-color: $gold; color: $text; }
+  }
+
+  &--danger {
+    background: rgba(224, 82, 82, 0.1);
+    border: 1px solid rgba(224, 82, 82, 0.25);
+    color: #e05252;
+
+    &:hover:not(:disabled) { background: rgba(224, 82, 82, 0.2); }
+  }
+
+  &--sm {
+    padding: 0.35rem 0.75rem;
+    font-size: 0.78rem;
+  }
+}
+
+// ── Table ──────────────────────────────────────────
+.admin-loading,
+.admin-empty {
+  padding: 3rem;
+  text-align: center;
+  color: $secondary;
+  font-size: 0.9rem;
+}
+
+.admin-table-wrap {
+  overflow-x: auto;
+  border: 1px solid $border;
+  border-radius: 10px;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+
+  th {
+    background: $card2;
+    color: $secondary;
+    font-weight: 600;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 0.75rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid $border;
+  }
+
+  td {
+    padding: 0.85rem 1rem;
+    color: $text;
+    border-bottom: 1px solid rgba(212, 160, 23, 0.07);
+    vertical-align: top;
+
+    strong { display: block; }
+    small { font-size: 0.78rem; color: $secondary; margin-top: 0.2rem; display: block; }
+  }
+
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(212, 160, 23, 0.03); }
+
+  &__actions {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+  }
+}
+
+.muted { color: $muted-color !important; }
+
+.admin-tag {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  background: rgba(212, 160, 23, 0.1);
+  color: $gold;
+  border: 1px solid rgba(212, 160, 23, 0.25);
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+}
+
+.admin-badge {
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  background: rgba(224, 82, 82, 0.1);
+  color: #e05252;
+
+  &.active {
+    background: rgba(52, 199, 89, 0.1);
+    color: #34c759;
+  }
+}
+
+.admin-link {
+  color: $gold;
+  font-size: 0.8rem;
+  text-decoration: none;
+
+  &:hover { text-decoration: underline; }
+}

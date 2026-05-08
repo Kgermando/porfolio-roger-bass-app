@@ -1,3 +1,51 @@
 import { Routes } from '@angular/router';
+import { Home } from './pages/home/home';
+import { authGuard } from './core/guards/auth.guard';
 
-export const routes: Routes = [];
+export const routes: Routes = [
+  { path: '', component: Home, title: 'Roger Bass | Guitariste Professionnel' },
+
+  // Admin section — lazy loaded
+  {
+    path: 'admin/login',
+    loadComponent: () =>
+      import('./pages/admin/login/login').then((m) => m.AdminLogin),
+    title: 'Admin — Connexion',
+  },
+  {
+    path: 'admin',
+    loadComponent: () =>
+      import('./pages/admin/dashboard/dashboard').then((m) => m.AdminDashboard),
+    canActivate: [authGuard],
+    title: 'Admin — Tableau de bord',
+    children: [
+      { path: '', redirectTo: 'works', pathMatch: 'full' },
+      {
+        path: 'works',
+        loadComponent: () =>
+          import('./pages/admin/works/works-admin').then((m) => m.WorksAdmin),
+        title: 'Admin — Vidéos',
+      },
+      {
+        path: 'events',
+        loadComponent: () =>
+          import('./pages/admin/events/events-admin').then((m) => m.EventsAdmin),
+        title: 'Admin — Agenda',
+      },
+      {
+        path: 'messages',
+        loadComponent: () =>
+          import('./pages/admin/messages/messages-admin').then((m) => m.MessagesAdmin),
+        title: 'Admin — Messages',
+      },
+      {
+        path: 'gallery',
+        loadComponent: () =>
+          import('./pages/admin/gallery/gallery-admin').then((m) => m.GalleryAdmin),
+        title: 'Admin — Galerie',
+      },
+    ],
+  },
+
+  { path: '**', redirectTo: '' },
+];

@@ -1,0 +1,108 @@
+<div class="admin-page">
+  <div class="admin-page__header">
+    <div>
+      <h2 class="admin-page__title">Agenda</h2>
+      <p class="admin-page__sub">Gérez les événements et concerts affichés sur le portfolio</p>
+    </div>
+    <button class="admin-btn admin-btn--primary" (click)="openCreate()" type="button">
+      + Ajouter un événement
+    </button>
+  </div>
+
+  @if (successMsg()) { <div class="admin-toast admin-toast--success">{{ successMsg() }}</div> }
+  @if (errorMsg()) { <div class="admin-toast admin-toast--error" role="alert">{{ errorMsg() }}</div> }
+
+  @if (showForm()) {
+    <div class="admin-form-card">
+      <h3 class="admin-form-card__title">
+        {{ editingEvent() ? 'Modifier l\'événement' : 'Nouvel événement' }}
+      </h3>
+
+      <form [formGroup]="form" (ngSubmit)="save()" class="admin-form" novalidate>
+        <div class="admin-form__row">
+          <div class="admin-field">
+            <label for="ev-title">Titre <span aria-hidden="true">*</span></label>
+            <input id="ev-title" type="text" formControlName="title" placeholder="Ex : Concert à Kinshasa" />
+          </div>
+          <div class="admin-field">
+            <label for="ev-location">Lieu</label>
+            <input id="ev-location" type="text" formControlName="location" placeholder="Ex : Palais du Peuple, Kinshasa" />
+          </div>
+        </div>
+
+        <div class="admin-form__row">
+          <div class="admin-field">
+            <label for="ev-date">Date & Heure <span aria-hidden="true">*</span></label>
+            <input id="ev-date" type="datetime-local" formControlName="date" />
+          </div>
+          <div class="admin-field">
+            <label for="ev-img">URL Image (optionnel)</label>
+            <input id="ev-img" type="url" formControlName="image_url" placeholder="https://..." />
+          </div>
+        </div>
+
+        <div class="admin-field">
+          <label for="ev-desc">Description</label>
+          <textarea id="ev-desc" formControlName="description" rows="3" placeholder="Détails de l'événement..."></textarea>
+        </div>
+
+        <div class="admin-field admin-field--check">
+          <label>
+            <input type="checkbox" formControlName="is_active" />
+            <span>Visible sur le portfolio</span>
+          </label>
+        </div>
+
+        <div class="admin-form__actions">
+          <button type="button" class="admin-btn admin-btn--ghost" (click)="cancel()">Annuler</button>
+          <button type="submit" class="admin-btn admin-btn--primary" [disabled]="form.invalid || saving()">
+            {{ saving() ? 'Enregistrement...' : 'Enregistrer' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  }
+
+  @if (loading()) {
+    <div class="admin-loading">Chargement...</div>
+  } @else if (events().length === 0) {
+    <div class="admin-empty">Aucun événement. Cliquez sur « Ajouter » pour commencer.</div>
+  } @else {
+    <div class="admin-table-wrap">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Titre</th>
+            <th>Date</th>
+            <th>Lieu</th>
+            <th>Visible</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (event of events(); track event.ID) {
+            <tr>
+              <td>
+                <strong>{{ event.title }}</strong>
+                @if (event.description) {
+                  <small class="muted">{{ event.description | slice:0:60 }}…</small>
+                }
+              </td>
+              <td>{{ event.date | date:'dd/MM/yyyy HH:mm' }}</td>
+              <td class="muted">{{ event.location || '—' }}</td>
+              <td>
+                <span class="admin-badge" [class.active]="event.is_active">
+                  {{ event.is_active ? 'Oui' : 'Non' }}
+                </span>
+              </td>
+              <td class="admin-table__actions">
+                <button class="admin-btn admin-btn--sm admin-btn--ghost" (click)="openEdit(event)" type="button">Modifier</button>
+                <button class="admin-btn admin-btn--sm admin-btn--danger" (click)="delete(event)" type="button">Supprimer</button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

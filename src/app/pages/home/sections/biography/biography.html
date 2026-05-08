@@ -1,0 +1,48 @@
+<section class="biography section" aria-labelledby="bio-title">
+  <div class="container">
+    <div class="biography__header aos">
+      <p class="section-badge">Mon Parcours</p>
+      <h2 id="bio-title" class="section-title">
+        Une vie dédiée à la <span>Musique</span>
+      </h2>
+      <div class="section-divider">
+        <span class="section-divider__line"></span>
+        <span class="section-divider__dot"></span>
+        <span class="section-divider__line"></span>
+      </div>
+      <p class="section-subtitle">
+        Depuis 2008, Mukendi Kadiayi Roger Bass construit un parcours musical riche,
+        nourri par la passion, la foi et le dépassement de soi.
+      </p>
+    </div>
+
+    <!-- Identity card -->
+    <div class="biography__identity aos">
+      <blockquote class="biography__quote">
+        <p>
+          "À travers mes compositions et mes performances, je cherche à transmettre des
+          émotions profondes et à partager une énergie authentique. Mon style se nourrit
+          de diverses influences, mêlant tradition et modernité, pour créer une identité
+          musicale unique."
+        </p>
+        <footer>— Roger Bass</footer>
+      </blockquote>
+    </div>
+
+    <!-- Timeline -->
+    <div class="timeline" role="list">
+      @for (event of timeline; track event.year; let i = $index) {
+        <article class="timeline__item" [class.timeline__item--right]="i % 2 !== 0" role="listitem">
+          <div class="timeline__connector" aria-hidden="true">
+            <span class="timeline__dot">{{ event.icon }}</span>
+          </div>
+          <div class="timeline__card aos" [class.aos-right]="i % 2 === 0" [class.aos-left]="i % 2 !== 0">
+            <span class="timeline__year">{{ event.year }}</span>
+            <h3 class="timeline__title">{{ event.title }}</h3>
+            <p class="timeline__desc">{{ event.desc }}</p>
+          </div>
+        </article>
+      }
+    </div>
+  </div>
+</section>

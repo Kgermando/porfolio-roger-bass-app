@@ -1,0 +1,438 @@
+.works {
+
+  // ── Header ──────────────────────────────────────
+  &__header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+
+    .section-subtitle { margin: 0 auto; }
+  }
+
+  // ── YouTube subscribe banner ─────────────────────
+  &__youtube-cta {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    background: var(--rb-bg-card);
+    border: 1px solid var(--rb-border);
+    border-radius: 10px;
+    padding: 1.25rem 1.75rem;
+    margin-bottom: 2.5rem;
+    text-decoration: none;
+    transition: border-color var(--transition), box-shadow var(--transition);
+
+    &:hover {
+      border-color: var(--rb-gold);
+      box-shadow: 0 0 20px rgba(212, 160, 23, 0.12);
+    }
+  }
+
+  &__yt-icon {
+    color: #ff3333;
+    flex-shrink: 0;
+    line-height: 0;
+  }
+
+  &__yt-text {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+
+    strong {
+      font-family: var(--font-heading);
+      font-size: 1rem;
+      color: var(--rb-text);
+    }
+
+    span {
+      font-size: 0.8rem;
+      color: var(--rb-text-secondary);
+    }
+  }
+
+  &__yt-arrow {
+    color: var(--rb-gold);
+    flex-shrink: 0;
+    line-height: 0;
+    transition: transform var(--transition);
+
+    .works__youtube-cta:hover & {
+      transform: translateX(4px);
+    }
+  }
+
+  // ── Category filter ──────────────────────────────
+  &__filter {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 2.5rem;
+  }
+
+  &__filter-btn {
+    padding: 0.5rem 1.25rem;
+    border-radius: 50px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border: 1.5px solid var(--rb-border);
+    background: transparent;
+    color: var(--rb-text-secondary);
+    cursor: pointer;
+    transition: all var(--transition);
+    text-transform: capitalize;
+
+    &:hover {
+      border-color: var(--rb-gold);
+      color: var(--rb-gold);
+    }
+
+    &.active {
+      background: var(--rb-gold);
+      border-color: var(--rb-gold);
+      color: #0a0603;
+      font-weight: 700;
+    }
+  }
+
+  // ── Video grid ───────────────────────────────────
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.75rem;
+  }
+
+  &__card {
+    display: flex;
+    flex-direction: column;
+    background: var(--rb-bg-card);
+    border: 1px solid var(--rb-border);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: border-color var(--transition), transform var(--transition), box-shadow var(--transition);
+
+    &:hover {
+      border-color: var(--rb-gold);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+    }
+  }
+
+  // ── Thumbnail button ────────────────────────────
+  &__thumb {
+    position: relative;
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border: none;
+    padding: 0;
+    background: #0a0603;
+    cursor: pointer;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center center;
+      transition: transform 0.45s ease, opacity 0.3s ease, filter 0.3s ease;
+      opacity: 0.92;
+      display: block;
+
+      // Shown when all thumbnail URLs fail
+      &.works__thumb-fallback {
+        background:
+          linear-gradient(135deg, #1c1208 0%, #0e0803 100%);
+        opacity: 1;
+      }
+    }
+
+    &:hover img {
+      transform: scale(1.06);
+      opacity: 1;
+      filter: brightness(1.05);
+    }
+
+    // Always-visible bottom gradient for readability of the tag badge
+    &::after {
+      content: '';
+      position: absolute;
+      inset: auto 0 0 0;
+      height: 55%;
+      background: linear-gradient(
+        to top,
+        rgba(8, 4, 2, 0.65) 0%,
+        transparent 100%
+      );
+      pointer-events: none;
+    }
+
+    // Channel-only placeholder (no video ID)
+    &--channel {
+      text-decoration: none;
+    }
+  }
+
+  // ── Play overlay ─────────────────────────────────
+  &__overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    transition: opacity 0.25s ease;
+
+    .works__thumb:hover & {
+      opacity: 1;
+    }
+  }
+
+  &__play-btn {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: var(--rb-gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #0a0603;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    transition: transform 0.2s ease, background 0.2s ease;
+
+    svg {
+      margin-left: 4px; // optical center for triangle
+    }
+
+    .works__thumb:hover & {
+      transform: scale(1.1);
+    }
+  }
+
+  // ── Category tag badge on thumbnail ─────────────
+  &__tag {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    background: rgba(10, 6, 3, 0.8);
+    color: var(--rb-gold);
+    border: 1px solid rgba(212, 160, 23, 0.4);
+    padding: 0.2rem 0.55rem;
+    border-radius: 4px;
+    backdrop-filter: blur(4px);
+  }
+
+  // ── YouTube logo placeholder (channel link / no ID) ─
+  &__yt-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    color: #e63232;
+    background: linear-gradient(135deg, #1c1208 0%, #0e0803 60%, #160b04 100%);
+
+    svg {
+      filter: drop-shadow(0 2px 8px rgba(230, 50, 50, 0.35));
+      transition: transform 0.25s ease;
+    }
+
+    p {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      color: var(--rb-text-secondary);
+    }
+
+    .works__thumb:hover & svg {
+      transform: scale(1.12);
+    }
+  }
+
+  // ── Card text info ────────────────────────────────
+  &__card-info {
+    padding: 1rem 1.25rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    flex: 1;
+  }
+
+  &__card-title {
+    font-family: var(--font-heading);
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--rb-text);
+    line-height: 1.35;
+  }
+
+  &__card-desc {
+    font-size: 0.85rem;
+    color: var(--rb-text-secondary);
+    line-height: 1.65;
+  }
+
+  // ── States ────────────────────────────────────────
+  &__loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 4rem;
+    color: var(--rb-text-muted);
+  }
+
+  &__spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--rb-border);
+    border-top-color: var(--rb-gold);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  // ── Pagination ───────────────────────────────────
+  &__pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    margin-top: 2.5rem;
+    flex-wrap: wrap;
+  }
+
+  &__page-btn {
+    min-width: 40px;
+    height: 40px;
+    padding: 0 0.6rem;
+    border-radius: 8px;
+    border: 1px solid var(--rb-border);
+    background: transparent;
+    color: var(--rb-text-secondary);
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s, border-color 0.2s, color 0.2s;
+
+    &:hover:not(:disabled) {
+      border-color: var(--rb-gold);
+      color: var(--rb-gold);
+    }
+
+    &.active {
+      background: var(--rb-gold);
+      border-color: var(--rb-gold);
+      color: #0a0603;
+    }
+
+    &--arrow {
+      color: var(--rb-text-secondary);
+
+      &:disabled {
+        opacity: 0.25;
+        cursor: not-allowed;
+      }
+    }
+  }
+
+  &__page-ellipsis {
+    color: var(--rb-text-muted);
+    font-size: 0.875rem;
+    padding: 0 0.25rem;
+    user-select: none;
+  }
+
+  &__empty {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--rb-text-secondary);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  &__error {
+    text-align: center;
+    padding: 2rem;
+    color: #e05252;
+    background: rgba(224, 82, 82, 0.05);
+    border: 1px solid rgba(224, 82, 82, 0.2);
+    border-radius: 8px;
+  }
+
+  // ── Video modal / lightbox ────────────────────────
+  &__modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background: rgba(4, 2, 1, 0.92);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    animation: fadeIn 0.2s ease;
+    backdrop-filter: blur(6px);
+  }
+
+  &__modal-inner {
+    position: relative;
+    width: 100%;
+    max-width: 900px;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #000;
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.8);
+    animation: slideUp 0.25s ease;
+  }
+
+  &__modal-close {
+    position: absolute;
+    top: -40px;
+    right: 0;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(255, 255, 255, 0.3);
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s, border-color 0.2s;
+
+    &:hover {
+      background: var(--rb-gold);
+      border-color: var(--rb-gold);
+      color: #0a0603;
+    }
+  }
+
+  &__modal-player {
+    position: relative;
+    aspect-ratio: 16 / 9;
+
+    iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+  }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

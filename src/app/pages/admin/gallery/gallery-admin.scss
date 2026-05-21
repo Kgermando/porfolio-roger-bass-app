@@ -20,6 +20,18 @@ $secondary: #c4a882;
   }
 }
 
+.admin-file-input {
+  display: block;
+  width: 100%;
+  padding: 0.4rem 0;
+  font-size: 0.9rem;
+  color: $secondary;
+}
+
+.uploading {
+  color: #f5a623 !important;
+}
+
 .gallery-admin {
   &__preview {
     border-radius: 8px;

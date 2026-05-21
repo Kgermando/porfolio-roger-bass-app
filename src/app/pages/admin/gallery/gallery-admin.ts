@@ -16,10 +16,12 @@ export class GalleryAdmin implements OnInit {
   photos = signal<GalleryPhoto[]>([]);
   loading = signal(true);
   saving = signal(false);
+  uploading = signal(false);
   errorMsg = signal('');
   successMsg = signal('');
   editingPhoto = signal<GalleryPhoto | null>(null);
   showForm = signal(false);
+  imagePreview = signal<string | null>(null);
 
   form = this.fb.nonNullable.group({
     src: ['', [Validators.required, Validators.maxLength(500)]],
@@ -42,6 +44,7 @@ export class GalleryAdmin implements OnInit {
   openCreate(): void {
     this.editingPhoto.set(null);
     this.form.reset({ src: '', alt: '', caption: '', sort_order: 0, is_active: true });
+    this.imagePreview.set(null);
     this.showForm.set(true);
   }
 
@@ -54,13 +57,42 @@ export class GalleryAdmin implements OnInit {
       sort_order: photo.sort_order,
       is_active: photo.is_active,
     });
+    this.imagePreview.set(photo.src || null);
     this.showForm.set(true);
   }
 
-  cancel(): void { this.showForm.set(false); this.editingPhoto.set(null); }
+  cancel(): void {
+    this.showForm.set(false);
+    this.editingPhoto.set(null);
+    this.imagePreview.set(null);
+  }
+
+  /** Upload selected image to B2, then store the returned URL in the form */
+  onFileSelected(e: Event): void {
+    const input = e.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = () => this.imagePreview.set(reader.result as string);
+    reader.readAsDataURL(file);
+
+    this.uploading.set(true);
+    this.errorMsg.set('');
+    this.api.uploadImage(file).subscribe({
+      next: (res) => {
+        this.form.patchValue({ src: res.url });
+        this.uploading.set(false);
+      },
+      error: (_err: unknown) => {
+        this.errorMsg.set('Erreur lors de l\'upload de l\'image');
+        this.uploading.set(false);
+      },
+    });
+  }
 
   save(): void {
-    if (this.form.invalid) return;
+    if (this.form.invalid || this.uploading()) return;
     this.saving.set(true);
     this.errorMsg.set('');
     const data = this.form.getRawValue();
@@ -73,6 +105,7 @@ export class GalleryAdmin implements OnInit {
       next: (_res: unknown) => {
         this.successMsg.set(editing ? 'Photo mise à jour !' : 'Photo ajoutée !');
         this.showForm.set(false);
+        this.imagePreview.set(null);
         this.load();
         this.saving.set(false);
         setTimeout(() => this.successMsg.set(''), 3000);
@@ -89,3 +122,4 @@ export class GalleryAdmin implements OnInit {
     });
   }
 }
+

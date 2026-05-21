@@ -1,19 +1,35 @@
 # robots.txt — Roger Bass Portfolio
 # https://rogerbass.com
 
+# ── Règles générales ──────────────────────────────────────────────────────────
 User-agent: *
 Allow: /
 Disallow: /admin
 Disallow: /admin/
+Disallow: /api/
 
-# Block common bad bots
+# ── Bots SEO — ralentissement du crawl ───────────────────────────────────────
 User-agent: AhrefsBot
 Crawl-delay: 10
 
 User-agent: SemrushBot
 Crawl-delay: 10
 
+User-agent: DotBot
+Crawl-delay: 10
+
+# ── Bots indésirables — accès bloqué ─────────────────────────────────────────
 User-agent: MJ12bot
 Disallow: /
 
+User-agent: PetalBot
+Disallow: /
+
+User-agent: SeznamBot
+Disallow: /
+
+User-agent: BLEXBot
+Disallow: /
+
+# ── Sitemap ───────────────────────────────────────────────────────────────────
 Sitemap: https://rogerbass.com/sitemap.xml

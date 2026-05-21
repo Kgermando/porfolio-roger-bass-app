@@ -28,6 +28,11 @@
       <div class="agenda__list">
         @for (event of events(); track event.ID) {
           <article class="agenda__card aos">
+            @if (event.image_url) {
+              <div class="agenda__img">
+                <img [src]="event.image_url" [alt]="event.title" loading="lazy" />
+              </div>
+            }
             <div class="agenda__date">
               <span class="agenda__day">{{ event.date | date:'d' }}</span>
               <span class="agenda__month">{{ event.date | date:'MMM' : '' : 'fr' }}</span>

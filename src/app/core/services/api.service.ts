@@ -29,7 +29,7 @@ export interface WorksPage {
   pages: number;
 }
 
-export interface Event {
+export interface PortfolioEvent {
   ID: number;
   title: string;
   description: string;
@@ -69,8 +69,8 @@ export class ApiService {
     return this.http.post<{ message: string; id: number }>(`${this.apiUrl}/contact`, data);
   }
 
-  getEvents(): Observable<Event[]> {
-    return this.http.get<Event[]>(`${this.apiUrl}/events`);
+  getEvents(): Observable<PortfolioEvent[]> {
+    return this.http.get<PortfolioEvent[]>(`${this.apiUrl}/events`);
   }
 
   getWorks(category?: string, page = 1, limit = 6): Observable<WorksPage> {
@@ -103,16 +103,16 @@ export class ApiService {
   }
 
   // ── Admin — Events ────────────────────────────────
-  adminGetEvents(): Observable<Event[]> {
-    return this.http.get<Event[]>(`${this.apiUrl}/admin/events`);
+  adminGetEvents(): Observable<PortfolioEvent[]> {
+    return this.http.get<PortfolioEvent[]>(`${this.apiUrl}/admin/events`);
   }
 
-  adminCreateEvent(event: Partial<Event>): Observable<Event> {
-    return this.http.post<Event>(`${this.apiUrl}/admin/events`, event);
+  adminCreateEvent(event: Partial<PortfolioEvent>): Observable<PortfolioEvent> {
+    return this.http.post<PortfolioEvent>(`${this.apiUrl}/admin/events`, event);
   }
 
-  adminUpdateEvent(id: number, event: Partial<Event>): Observable<Event> {
-    return this.http.put<Event>(`${this.apiUrl}/admin/events/${id}`, event);
+  adminUpdateEvent(id: number, event: Partial<PortfolioEvent>): Observable<PortfolioEvent> {
+    return this.http.put<PortfolioEvent>(`${this.apiUrl}/admin/events/${id}`, event);
   }
 
   adminDeleteEvent(id: number): Observable<{ message: string }> {
@@ -147,5 +147,12 @@ export class ApiService {
 
   adminDeleteGalleryPhoto(id: number): Observable<{ message: string }> {
     return this.http.delete<{ message: string }>(`${this.apiUrl}/admin/gallery/${id}`);
+  }
+
+  // ── Admin — Image upload (Backblaze B2) ───────────────────────────────────
+  uploadImage(file: File): Observable<{ url: string }> {
+    const fd = new FormData();
+    fd.append('file', file);
+    return this.http.post<{ url: string }>(`${this.apiUrl}/admin/upload`, fd);
   }
 }

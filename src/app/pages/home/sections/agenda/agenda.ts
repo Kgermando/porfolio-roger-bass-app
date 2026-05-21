@@ -1,5 +1,5 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { ApiService, Event } from '../../../../core/services/api.service';
+import { ApiService, PortfolioEvent } from '../../../../core/services/api.service';
 import { DatePipe } from '@angular/common';
 
 @Component({
@@ -11,7 +11,7 @@ import { DatePipe } from '@angular/common';
 export class AgendaSection implements OnInit {
   private api = inject(ApiService);
 
-  events = signal<Event[]>([]);
+  events = signal<PortfolioEvent[]>([]);
   loading = signal(true);
   error = signal(false);
 

@@ -20,14 +20,25 @@
 
       <form [formGroup]="form" (ngSubmit)="save()" class="admin-form" novalidate>
         <div class="admin-field">
-          <label for="g-src">URL ou chemin de l'image <span aria-hidden="true">*</span></label>
+          <label for="g-file">Image <span aria-hidden="true">*</span></label>
           <input
-            id="g-src" type="text" formControlName="src"
-            placeholder="images/rogerbass2.jpeg  ou  https://example.com/photo.jpg"
+            id="g-file"
+            type="file"
+            accept="image/*"
+            class="admin-file-input"
+            (change)="onFileSelected($event)"
           />
-          <small class="admin-field__hint">
-            Images locales : placez-les dans <code>public/images/</code> et utilisez le chemin relatif.
-          </small>
+          @if (uploading()) {
+            <small class="admin-field__hint uploading">⏳ Upload en cours vers Backblaze B2…</small>
+          }
+          <!-- Preview -->
+          @if (imagePreview()) {
+            <div class="gallery-admin__preview">
+              <img [src]="imagePreview()!" alt="Aperçu" loading="lazy" />
+            </div>
+          }
+          <!-- Hidden control stores the B2 URL -->
+          <input type="hidden" formControlName="src" />
         </div>
 
         <div class="admin-form__row">
@@ -54,17 +65,10 @@
           </div>
         </div>
 
-        <!-- Preview -->
-        @if (form.controls.src.value) {
-          <div class="gallery-admin__preview">
-            <img [src]="form.controls.src.value" alt="Aperçu" loading="lazy" />
-          </div>
-        }
-
         <div class="admin-form__actions">
           <button type="button" class="admin-btn admin-btn--ghost" (click)="cancel()">Annuler</button>
-          <button type="submit" class="admin-btn admin-btn--primary" [disabled]="form.invalid || saving()">
-            {{ saving() ? 'Enregistrement...' : 'Enregistrer' }}
+          <button type="submit" class="admin-btn admin-btn--primary" [disabled]="form.invalid || saving() || uploading()">
+            {{ saving() ? 'Enregistrement…' : uploading() ? 'Upload…' : 'Enregistrer' }}
           </button>
         </div>
       </form>

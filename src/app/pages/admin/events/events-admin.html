@@ -36,8 +36,24 @@
             <input id="ev-date" type="datetime-local" formControlName="date" />
           </div>
           <div class="admin-field">
-            <label for="ev-img">URL Image (optionnel)</label>
-            <input id="ev-img" type="url" formControlName="image_url" placeholder="https://..." />
+            <label for="ev-img">Image de l'événement</label>
+            <input
+              id="ev-img"
+              type="file"
+              accept="image/*"
+              class="admin-file-input"
+              (change)="onFileSelected($event)"
+            />
+            @if (uploading()) {
+              <small class="admin-field__hint uploading">⏳ Upload en cours…</small>
+            }
+            @if (imagePreview()) {
+              <div class="admin-img-preview">
+                <img [src]="imagePreview()!" alt="Aperçu" loading="lazy" />
+              </div>
+            }
+            <!-- Hidden form control keeps the B2 URL -->
+            <input type="hidden" formControlName="image_url" />
           </div>
         </div>
 
@@ -55,8 +71,8 @@
 
         <div class="admin-form__actions">
           <button type="button" class="admin-btn admin-btn--ghost" (click)="cancel()">Annuler</button>
-          <button type="submit" class="admin-btn admin-btn--primary" [disabled]="form.invalid || saving()">
-            {{ saving() ? 'Enregistrement...' : 'Enregistrer' }}
+          <button type="submit" class="admin-btn admin-btn--primary" [disabled]="form.invalid || saving() || uploading()">
+            {{ saving() ? 'Enregistrement…' : uploading() ? 'Upload…' : 'Enregistrer' }}
           </button>
         </div>
       </form>
@@ -72,6 +88,7 @@
       <table class="admin-table">
         <thead>
           <tr>
+            <th>Image</th>
             <th>Titre</th>
             <th>Date</th>
             <th>Lieu</th>
@@ -82,6 +99,13 @@
         <tbody>
           @for (event of events(); track event.ID) {
             <tr>
+              <td>
+                @if (event.image_url) {
+                  <img [src]="event.image_url" alt="{{ event.title }}" class="admin-thumb" loading="lazy" />
+                } @else {
+                  <span class="muted">—</span>
+                }
+              </td>
               <td>
                 <strong>{{ event.title }}</strong>
                 @if (event.description) {

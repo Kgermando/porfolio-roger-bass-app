@@ -1,0 +1,10 @@
+{
+  "$schema": "https://railway.com/railway.schema.json",
+  "build": {},
+  "deploy": {
+    "startCommand": "node dist/porfolio-roger-bass-app/server/server.mjs",
+    "variables": {
+      "RAILPACK_NO_SPA": "1"
+    }
+  }
+}

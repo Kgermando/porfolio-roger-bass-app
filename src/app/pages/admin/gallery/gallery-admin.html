@@ -84,7 +84,7 @@
       @for (photo of photos(); track photo.ID) {
         <div class="gallery-admin__card" [class.inactive]="!photo.is_active">
           <div class="gallery-admin__thumb">
-            <img [src]="photo.src" [alt]="photo.alt" loading="lazy" />
+            <img [src]="photo.src" [alt]="photo.alt" loading="lazy" (error)="onImgError($event)" />
             @if (!photo.is_active) {
               <span class="gallery-admin__hidden-badge">Masqué</span>
             }

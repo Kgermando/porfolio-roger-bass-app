@@ -28,4 +28,9 @@ export class GallerySection implements OnInit {
   close(): void {
     this.activeIndex.set(null);
   }
+
+  onImgError(e: Event): void {
+    const img = e.target as HTMLImageElement;
+    img.style.visibility = 'hidden';
+  }
 }

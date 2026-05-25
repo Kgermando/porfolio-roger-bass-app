@@ -101,7 +101,7 @@
             <tr>
               <td>
                 @if (event.image_url) {
-                  <img [src]="event.image_url" alt="{{ event.title }}" class="admin-thumb" loading="lazy" />
+                  <img [src]="event.image_url" alt="{{ event.title }}" class="admin-thumb" loading="lazy" (error)="onImgError($event)" />
                 } @else {
                   <span class="muted">—</span>
                 }

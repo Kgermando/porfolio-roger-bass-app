@@ -1,6 +1,7 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DatePipe, SlicePipe } from '@angular/common';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { ApiService, PortfolioEvent } from '../../../core/services/api.service';
 
 @Component({
@@ -12,6 +13,7 @@ import { ApiService, PortfolioEvent } from '../../../core/services/api.service';
 export class EventsAdmin implements OnInit {
   private api = inject(ApiService);
   private fb = inject(FormBuilder);
+  private sanitizer = inject(DomSanitizer);
 
   events = signal<PortfolioEvent[]>([]);
   loading = signal(true);
@@ -21,7 +23,7 @@ export class EventsAdmin implements OnInit {
   successMsg = signal('');
   editingEvent = signal<PortfolioEvent | null>(null);
   showForm = signal(false);
-  imagePreview = signal<string | null>(null);
+  imagePreview = signal<SafeUrl | null>(null);
 
   form = this.fb.nonNullable.group({
     title: ['', [Validators.required, Validators.maxLength(200)]],
@@ -65,7 +67,7 @@ export class EventsAdmin implements OnInit {
       image_url: event.image_url,
       is_active: event.is_active,
     });
-    this.imagePreview.set(event.image_url || null);
+    this.imagePreview.set(event.image_url ? this.sanitizer.bypassSecurityTrustUrl(event.image_url) : null);
     this.showForm.set(true);
   }
 
@@ -83,7 +85,9 @@ export class EventsAdmin implements OnInit {
 
     // Local preview
     const reader = new FileReader();
-    reader.onload = () => this.imagePreview.set(reader.result as string);
+    reader.onload = () => this.imagePreview.set(
+      this.sanitizer.bypassSecurityTrustUrl(reader.result as string)
+    );
     reader.readAsDataURL(file);
 
     // Upload to B2
@@ -134,6 +138,11 @@ export class EventsAdmin implements OnInit {
       next: (_res: unknown) => this.load(),
       error: (_err: unknown) => this.errorMsg.set('Erreur lors de la suppression'),
     });
+  }
+
+  onImgError(e: Event): void {
+    const img = e.target as HTMLImageElement;
+    img.style.visibility = 'hidden';
   }
 }
 

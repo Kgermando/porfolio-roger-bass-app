@@ -1,5 +1,6 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { ApiService, GalleryPhoto } from '../../../core/services/api.service';
 
 @Component({
@@ -12,6 +13,7 @@ import { ApiService, GalleryPhoto } from '../../../core/services/api.service';
 export class GalleryAdmin implements OnInit {
   private api = inject(ApiService);
   private fb = inject(FormBuilder);
+  private sanitizer = inject(DomSanitizer);
 
   photos = signal<GalleryPhoto[]>([]);
   loading = signal(true);
@@ -21,7 +23,7 @@ export class GalleryAdmin implements OnInit {
   successMsg = signal('');
   editingPhoto = signal<GalleryPhoto | null>(null);
   showForm = signal(false);
-  imagePreview = signal<string | null>(null);
+  imagePreview = signal<SafeUrl | null>(null);
 
   form = this.fb.nonNullable.group({
     src: ['', [Validators.required, Validators.maxLength(500)]],
@@ -57,7 +59,7 @@ export class GalleryAdmin implements OnInit {
       sort_order: photo.sort_order,
       is_active: photo.is_active,
     });
-    this.imagePreview.set(photo.src || null);
+    this.imagePreview.set(photo.src ? this.sanitizer.bypassSecurityTrustUrl(photo.src) : null);
     this.showForm.set(true);
   }
 
@@ -74,7 +76,9 @@ export class GalleryAdmin implements OnInit {
     if (!file) return;
 
     const reader = new FileReader();
-    reader.onload = () => this.imagePreview.set(reader.result as string);
+    reader.onload = () => this.imagePreview.set(
+      this.sanitizer.bypassSecurityTrustUrl(reader.result as string)
+    );
     reader.readAsDataURL(file);
 
     this.uploading.set(true);
@@ -120,6 +124,11 @@ export class GalleryAdmin implements OnInit {
       next: (_res: unknown) => this.load(),
       error: (_err: unknown) => this.errorMsg.set('Erreur lors de la suppression'),
     });
+  }
+
+  onImgError(e: Event): void {
+    const img = e.target as HTMLImageElement;
+    img.style.visibility = 'hidden';
   }
 }
 

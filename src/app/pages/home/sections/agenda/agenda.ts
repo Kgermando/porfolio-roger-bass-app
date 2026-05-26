@@ -1,6 +1,6 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, PLATFORM_ID, ElementRef } from '@angular/core';
 import { ApiService, PortfolioEvent } from '../../../../core/services/api.service';
-import { DatePipe } from '@angular/common';
+import { DatePipe, isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-agenda',
@@ -10,6 +10,8 @@ import { DatePipe } from '@angular/common';
 })
 export class AgendaSection implements OnInit {
   private api = inject(ApiService);
+  private platformId = inject(PLATFORM_ID);
+  private elRef = inject(ElementRef);
 
   events = signal<PortfolioEvent[]>([]);
   loading = signal(true);
@@ -20,11 +22,31 @@ export class AgendaSection implements OnInit {
       next: (data) => {
         this.events.set(data);
         this.loading.set(false);
+        if (isPlatformBrowser(this.platformId)) {
+          setTimeout(() => this.refreshAosAnimations(), 50);
+        }
       },
       error: () => {
         this.error.set(true);
         this.loading.set(false);
       },
     });
+  }
+
+  private refreshAosAnimations(): void {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.1 },
+    );
+    this.elRef.nativeElement
+      .querySelectorAll('.aos:not(.visible), .aos-left:not(.visible), .aos-right:not(.visible)')
+      .forEach((el: Element) => observer.observe(el));
   }
 }

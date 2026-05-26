@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal, PLATFORM_ID } from '@angular/core';
+import { Component, inject, OnInit, signal, PLATFORM_ID, ElementRef } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ApiService, Work, WorksPage } from '../../../../core/services/api.service';
@@ -14,6 +14,7 @@ export class WorksSection implements OnInit {
   private api = inject(ApiService);
   private sanitizer = inject(DomSanitizer);
   private platformId = inject(PLATFORM_ID);
+  private elRef = inject(ElementRef);
 
   works = signal<Work[]>([]);
   loading = signal(true);
@@ -48,9 +49,29 @@ export class WorksSection implements OnInit {
         this.totalPages.set(res.pages ?? 1);
         this.page.set(res.page ?? 1);
         this.loading.set(false);
+        if (isPlatformBrowser(this.platformId)) {
+          setTimeout(() => this.refreshAosAnimations(), 50);
+        }
       },
       error: () => { this.error.set(true); this.loading.set(false); },
     });
+  }
+
+  private refreshAosAnimations(): void {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.1 },
+    );
+    this.elRef.nativeElement
+      .querySelectorAll('.aos:not(.visible), .aos-left:not(.visible), .aos-right:not(.visible)')
+      .forEach((el: Element) => observer.observe(el));
   }
 
   setCategory(cat: Category): void {

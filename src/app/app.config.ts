@@ -1,6 +1,6 @@
 import { ApplicationConfig, LOCALE_ID, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideRouter, withInMemoryScrolling } from '@angular/router';
-import { provideHttpClient, withFetch, withInterceptors, withHttpTransferCache } from '@angular/common/http';
+import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
 import { routes } from './app.routes';
@@ -16,10 +16,6 @@ export const appConfig: ApplicationConfig = {
     { provide: LOCALE_ID, useValue: 'fr-FR' },
     provideRouter(routes, withInMemoryScrolling({ scrollPositionRestoration: 'top' })),
     provideClientHydration(withEventReplay()),
-    provideHttpClient(
-      withFetch(),
-      withInterceptors([authInterceptor, errorInterceptor]),
-      withHttpTransferCache({ includePostRequests: false }),
-    ),
+    provideHttpClient(withFetch(), withInterceptors([authInterceptor, errorInterceptor])),
   ],
 };

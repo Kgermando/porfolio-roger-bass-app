@@ -21,8 +21,9 @@ export class Navbar {
     { id: 'accueil', label: 'Accueil' },
     { id: 'apropos', label: 'À Propos' },
     { id: 'biographie', label: 'Biographie' },
-    { id: 'oeuvres', label: 'Œuvres' },
+    { id: 'oeuvres', label: 'Vidéos' },
     { id: 'galerie', label: 'Galerie' },
+    { id: 'enseignements', label: 'Enseignements' },
     { id: 'agenda', label: 'Agenda' },
     { id: 'services', label: 'Services' },
   ];

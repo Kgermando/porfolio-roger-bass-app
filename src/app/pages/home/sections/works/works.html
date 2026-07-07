@@ -2,15 +2,15 @@
   <div class="container">
 
     <!-- Header -->
-    <div class="works__header aos">
+    <div class="section-header aos">
       <p class="section-badge">Mes Vidéos</p>
       <h2 id="works-title" class="section-title">Sur <span>YouTube</span></h2>
-      <div class="section-divider">
+      <div class="section-divider section-divider--center">
         <span class="section-divider__line"></span>
         <span class="section-divider__dot"></span>
         <span class="section-divider__line"></span>
       </div>
-      <p class="section-subtitle">
+      <p class="section-subtitle section-subtitle--center">
         Performances scéniques, tutoriels de guitare et compositions originales.
         Abonnez-vous pour ne rien manquer.
       </p>
@@ -69,21 +69,30 @@
           @for (work of works(); track work.ID) {
             <article class="works__card aos">
 
-              <!-- Thumbnail with play overlay (video URL) -->
-              @if (getYouTubeId(work.link)) {
+              <!-- Thumbnail with play overlay (YouTube or direct video) -->
+              @if (getYouTubeId(work.link) || isDirectVideo(work.link)) {
                 <button
                   class="works__thumb"
                   (click)="playVideo(work.link)"
                   [attr.aria-label]="'Lire la vidéo : ' + work.title"
                   type="button"
                 >
-                  <img
-                    [src]="getThumbnailUrl(work.link)"
-                    [alt]="work.title"
-                    loading="lazy"
-                    width="480" height="270"
-                    (error)="onThumbError($any($event.target), work.link)"
-                  />
+                  @if (isDirectVideo(work.link)) {
+                    <div class="works__direct-preview" aria-hidden="true">
+                      <svg width="52" height="52" viewBox="0 0 24 24" fill="currentColor">
+                        <polygon points="5,3 19,12 5,21"/>
+                      </svg>
+                      <p>Vidéo</p>
+                    </div>
+                  } @else {
+                    <img
+                      [src]="getThumbnailUrl(work.link)"
+                      [alt]="work.title"
+                      loading="lazy"
+                      width="480" height="270"
+                      (error)="onThumbError($any($event.target), work.link)"
+                    />
+                  }
                   <div class="works__overlay" aria-hidden="true">
                     <div class="works__play-btn">
                       <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
@@ -199,7 +208,7 @@
   </div>
 
   <!-- ── Video modal player ── -->
-  @if (activeVideoId()) {
+  @if (activeVideoId() || activeDirectVideo()) {
     <div
       class="works__modal"
       role="dialog"
@@ -219,13 +228,17 @@
           </svg>
         </button>
         <div class="works__modal-player">
-          <iframe
-            [src]="getSafeEmbedUrl(activeVideoId()!)"
-            frameborder="0"
-            allow="autoplay; encrypted-media; picture-in-picture"
-            allowfullscreen
-            title="Vidéo YouTube Roger Bass"
-          ></iframe>
+          @if (activeDirectVideo()) {
+            <video [src]="getSafeVideoUrl(activeDirectVideo()!)" controls autoplay playsinline></video>
+          } @else {
+            <iframe
+              [src]="getSafeEmbedUrl(activeVideoId()!)"
+              frameborder="0"
+              allow="autoplay; encrypted-media; picture-in-picture"
+              allowfullscreen
+              title="Vidéo Roger Bass"
+            ></iframe>
+          }
         </div>
       </div>
     </div>

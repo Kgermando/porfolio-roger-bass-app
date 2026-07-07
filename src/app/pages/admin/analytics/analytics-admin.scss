@@ -1,0 +1,142 @@
+@use '../admin-shared';
+
+.analytics-admin {
+  &__cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  &__card {
+    background: #1c1208;
+    border: 1px solid rgba(212, 160, 23, 0.15);
+    border-radius: 10px;
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  &__label {
+    font-size: 0.75rem;
+    color: #c4a882;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  &__value {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.75rem;
+    color: #d4a017;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  &__panel {
+    background: #1c1208;
+    border: 1px solid rgba(212, 160, 23, 0.15);
+    border-radius: 10px;
+    padding: 1.25rem;
+
+    &--wide {
+      grid-column: 1 / -1;
+    }
+  }
+
+  &__panel-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    color: #f5e6c8;
+    margin: 0 0 1rem;
+  }
+
+  &__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  &__list-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(212, 160, 23, 0.07);
+    font-size: 0.875rem;
+    gap: 1rem;
+  }
+
+  &__country {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #f5e6c8;
+  }
+
+  &__flag {
+    font-size: 0.65rem;
+    font-weight: 700;
+    background: rgba(212, 160, 23, 0.15);
+    color: #d4a017;
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    min-width: 32px;
+    text-align: center;
+  }
+
+  &__path {
+    color: #c4a882;
+    word-break: break-all;
+  }
+
+  &__count {
+    font-weight: 700;
+    color: #d4a017;
+    flex-shrink: 0;
+  }
+
+  &__chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 4px;
+    height: 120px;
+    overflow-x: auto;
+    padding-bottom: 1.5rem;
+  }
+
+  &__bar-wrap {
+    flex: 1;
+    min-width: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    justify-content: flex-end;
+    position: relative;
+  }
+
+  &__bar {
+    width: 100%;
+    background: linear-gradient(to top, #a07810, #d4a017);
+    border-radius: 3px 3px 0 0;
+    min-height: 2px;
+    transition: height 0.3s ease;
+  }
+
+  &__bar-label {
+    position: absolute;
+    bottom: -1.25rem;
+    font-size: 0.6rem;
+    color: #7a6045;
+    white-space: nowrap;
+  }
+}

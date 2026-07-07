@@ -1,6 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ApiService } from '../../../../core/services/api.service';
+import { extractApiError } from '../../../../core/utils/api.util';
 
 @Component({
   selector: 'app-contact',
@@ -43,8 +44,8 @@ export class ContactSection {
         this.form.reset();
         this.isSubmitting.set(false);
       },
-      error: () => {
-        this.errorMsg.set('Une erreur est survenue. Veuillez réessayer ou me contacter directement.');
+      error: (err) => {
+        this.errorMsg.set(extractApiError(err, 'Une erreur est survenue. Veuillez réessayer ou me contacter directement.'));
         this.isSubmitting.set(false);
       },
     });

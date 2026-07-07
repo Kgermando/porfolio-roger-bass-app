@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal, PLATFORM_ID, ElementRef } from '@angular/core';
+import { Component, inject, OnInit, signal, PLATFORM_ID, ElementRef, HostListener } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { ApiService, GalleryPhoto } from '../../../../core/services/api.service';
 
@@ -16,6 +16,9 @@ export class GallerySection implements OnInit {
   loading = signal(true);
   error = signal(false);
   activeIndex = signal<number | null>(null);
+  slideDirection = signal<'left' | 'right' | 'none'>('none');
+
+  private touchStartX = 0;
 
   ngOnInit(): void {
     this.api.getGallery().subscribe({
@@ -32,6 +35,14 @@ export class GallerySection implements OnInit {
     if (isPlatformBrowser(this.platformId)) {
       setTimeout(() => this.initAosObserver(), 50);
     }
+  }
+
+  @HostListener('document:keydown', ['$event'])
+  onKeydown(e: KeyboardEvent): void {
+    if (this.activeIndex() === null) return;
+    if (e.key === 'Escape') this.close();
+    if (e.key === 'ArrowLeft') this.prev(e);
+    if (e.key === 'ArrowRight') this.next(e);
   }
 
   private initAosObserver(): void {
@@ -53,10 +64,46 @@ export class GallerySection implements OnInit {
 
   open(index: number): void {
     this.activeIndex.set(index);
+    this.slideDirection.set('none');
+    if (isPlatformBrowser(this.platformId)) {
+      document.body.style.overflow = 'hidden';
+    }
   }
 
   close(): void {
     this.activeIndex.set(null);
+    if (isPlatformBrowser(this.platformId)) {
+      document.body.style.overflow = '';
+    }
+  }
+
+  prev(e?: Event): void {
+    e?.stopPropagation();
+    const idx = this.activeIndex();
+    if (idx === null) return;
+    const total = this.photos().length;
+    this.slideDirection.set('right');
+    this.activeIndex.set((idx - 1 + total) % total);
+  }
+
+  next(e?: Event): void {
+    e?.stopPropagation();
+    const idx = this.activeIndex();
+    if (idx === null) return;
+    const total = this.photos().length;
+    this.slideDirection.set('left');
+    this.activeIndex.set((idx + 1) % total);
+  }
+
+  onTouchStart(e: TouchEvent): void {
+    this.touchStartX = e.changedTouches[0].clientX;
+  }
+
+  onTouchEnd(e: TouchEvent): void {
+    const diff = e.changedTouches[0].clientX - this.touchStartX;
+    if (Math.abs(diff) < 50) return;
+    if (diff > 0) this.prev();
+    else this.next();
   }
 
   onImgError(e: Event): void {

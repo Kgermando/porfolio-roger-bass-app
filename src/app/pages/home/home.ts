@@ -1,6 +1,7 @@
 import { Component, OnInit, inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { SeoService } from '../../core/services/seo.service';
+import { AnalyticsService } from '../../core/services/analytics.service';
 import { Navbar } from '../../shared/navbar/navbar';
 import { Footer } from '../../shared/footer/footer';
 import { HeroSection } from './sections/hero/hero';
@@ -8,6 +9,7 @@ import { AboutSection } from './sections/about/about';
 import { BiographySection } from './sections/biography/biography';
 import { WorksSection } from './sections/works/works';
 import { GallerySection } from './sections/gallery/gallery';
+import { ArticlesSection } from './sections/articles/articles';
 import { AgendaSection } from './sections/agenda/agenda';
 import { ServicesSection } from './sections/services/services';
 import { ContactSection } from './sections/contact/contact';
@@ -24,6 +26,7 @@ import { ContactSection } from './sections/contact/contact';
     BiographySection,
     WorksSection,
     GallerySection,
+    ArticlesSection,
     AgendaSection,
     ServicesSection,
     ContactSection,
@@ -31,13 +34,14 @@ import { ContactSection } from './sections/contact/contact';
 })
 export class Home implements OnInit {
   private seo = inject(SeoService);
+  private analytics = inject(AnalyticsService);
   private platformId = inject(PLATFORM_ID);
 
   ngOnInit(): void {
     this.seo.update({
-      title: 'Roger Bass | Guitariste Professionnel – Mukendi Kadiayi Roger Bass',
+      title: 'Roger Bass | Guitariste & Prédicateur – Mukendi Kadiayi Roger Bass',
       description:
-        'Portfolio officiel de Mukendi Kadiayi Roger Bass, guitariste professionnel depuis 2008. Guitare solo, accompagnement, basse et synthétiseur. Cours, sessions studio et prestations événementielles.',
+        'Portfolio officiel de Mukendi Kadiayi Roger Bass, guitariste professionnel depuis 2008. Vidéos, enseignements, galerie photos, agenda concerts et services musicaux.',
       image: 'https://rogerbass.com/images/rogerbass2.jpeg',
       imageAlt: 'Mukendi Kadiayi Roger Bass – Guitariste Professionnel',
       url: 'https://rogerbass.com/',
@@ -66,6 +70,7 @@ export class Home implements OnInit {
             'Guitare Accompagnement',
             'Synthétiseur',
             'Cours de guitare',
+            'Enseignements édifiants',
           ],
           sameAs: [
             'https://www.facebook.com/rogerbass.mukendikadiayi',
@@ -103,6 +108,8 @@ export class Home implements OnInit {
         },
       ],
     });
+
+    this.analytics.trackPageView('/');
 
     if (isPlatformBrowser(this.platformId)) {
       this.initScrollAnimations();

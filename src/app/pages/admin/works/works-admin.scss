@@ -1,1 +1,55 @@
-@use '../admin-shared' as *;
+@use '../admin-shared';
+
+.works-admin {
+  &__source-toggle {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  &__source-btn {
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    border: 1.5px solid rgba(212, 160, 23, 0.2);
+    background: transparent;
+    color: #c4a882;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &.active {
+      background: rgba(212, 160, 23, 0.15);
+      border-color: #d4a017;
+      color: #d4a017;
+    }
+
+    &:hover:not(.active) {
+      border-color: rgba(212, 160, 23, 0.4);
+      color: #f5e6c8;
+    }
+  }
+}
+
+.admin-file-input {
+  font-size: 0.85rem;
+  color: #c4a882;
+}
+
+.admin-field__hint {
+  font-size: 0.78rem;
+
+  &.uploading { color: #d4a017; }
+  &.success { color: #34c759; }
+}
+
+.admin-url-fallback {
+  margin-top: 0.5rem;
+  background: #120a05;
+  border: 1px solid rgba(212, 160, 23, 0.15);
+  border-radius: 6px;
+  padding: 0.65rem 0.9rem;
+  color: #f5e6c8;
+  font-size: 0.85rem;
+  width: 100%;
+}

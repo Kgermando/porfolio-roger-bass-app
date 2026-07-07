@@ -1,0 +1,114 @@
+<section class="articles section" aria-labelledby="articles-title">
+  <div class="container">
+    <div class="section-header aos">
+      <p class="section-badge">Parole de Dieu</p>
+      <h2 id="articles-title" class="section-title">
+        Enseignements <span>édifiants</span>
+      </h2>
+      <div class="section-divider section-divider--center">
+        <span class="section-divider__line"></span>
+        <span class="section-divider__dot"></span>
+        <span class="section-divider__line"></span>
+      </div>
+      <p class="section-subtitle section-subtitle--center">
+        Messages inspirés et réflexions partagés par Roger Bass.
+      </p>
+    </div>
+
+    @if (loading()) {
+      <p class="articles__state">Chargement des enseignements…</p>
+    } @else if (error()) {
+      <p class="articles__state">Impossible de charger les enseignements.</p>
+    } @else if (articles().length === 0) {
+      <p class="articles__state">Aucun enseignement publié pour le moment.</p>
+    } @else {
+      <div class="articles__grid">
+        @for (article of articles(); track article.ID) {
+          <article class="articles__card aos">
+            <a
+              [routerLink]="['/enseignements', article.slug]"
+              class="articles__card-link"
+              [attr.aria-label]="'Lire : ' + article.title"
+            >
+              @if (article.cover_image) {
+                <div class="articles__cover-wrap">
+                  <img [src]="article.cover_image" [alt]="article.title" class="articles__cover" loading="lazy" width="320" height="180" />
+                </div>
+              } @else {
+                <div class="articles__cover-wrap articles__cover-wrap--placeholder" aria-hidden="true">
+                  <span>✝</span>
+                </div>
+              }
+              <div class="articles__body">
+                <time class="articles__date" [attr.datetime]="articleDate(article) ?? undefined">
+                  @if (articleDate(article); as d) {
+                    {{ d | date:'d MMMM yyyy' }}
+                  }
+                </time>
+                <h3 class="articles__title">{{ article.title }}</h3>
+                @if (excerptHtml(article); as html) {
+                  <div class="articles__excerpt rich-content" [innerHTML]="html"></div>
+                } @else {
+                  <p class="articles__excerpt">{{ excerptText(article) }}@if (excerptText(article).length >= 120) {…}</p>
+                }
+                <span class="articles__read-more">Lire l'enseignement →</span>
+              </div>
+            </a>
+            <button
+              type="button"
+              class="articles__quick-read"
+              (click)="openPreview(article, $event)"
+              [attr.aria-label]="'Aperçu rapide : ' + article.title"
+            >
+              Aperçu
+            </button>
+            <div class="articles__share" (click)="$event.stopPropagation()">
+              <app-share-buttons
+                [title]="article.title"
+                [path]="sharePath(article)"
+                [text]="shareText(article)"
+                [compact]="true"
+              />
+            </div>
+          </article>
+        }
+      </div>
+    }
+  </div>
+
+  @if (activeArticle()) {
+    <div class="articles__modal" role="dialog" aria-modal="true" [attr.aria-label]="activeArticle()!.title" (click)="closePreview()">
+      <div class="articles__modal-inner" (click)="$event.stopPropagation()">
+        <button class="articles__modal-close" (click)="closePreview()" aria-label="Fermer" type="button">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+        @if (activeArticle()!.cover_image) {
+          <img [src]="activeArticle()!.cover_image" [alt]="activeArticle()!.title" class="articles__modal-cover" />
+        }
+        <div class="articles__modal-content">
+          <time class="articles__date">
+            @if (articleDate(activeArticle()!); as d) {
+              {{ d | date:'d MMMM yyyy' }}
+            }
+          </time>
+          <h3>{{ activeArticle()!.title }}</h3>
+          <p class="articles__author">Par {{ activeArticle()!.author }}</p>
+          <div
+            class="articles__content rich-content"
+            [innerHTML]="safeContent(activeArticle()!.content)"
+          ></div>
+          <app-share-buttons
+            [title]="activeArticle()!.title"
+            [path]="sharePath(activeArticle()!)"
+            [text]="shareText(activeArticle()!)"
+          />
+          <a [routerLink]="['/enseignements', activeArticle()!.slug]" class="articles__full-link" (click)="closePreview()">
+            Ouvrir la page complète →
+          </a>
+        </div>
+      </div>
+    </div>
+  }
+</section>

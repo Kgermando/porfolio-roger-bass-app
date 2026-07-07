@@ -1,0 +1,92 @@
+.share {
+  padding: 1rem 0;
+  border-top: 1px solid var(--rb-border);
+
+  &--compact {
+    padding: 0;
+    border-top: none;
+
+    .share__label {
+      display: none;
+    }
+
+    .share__actions {
+      gap: 0.35rem;
+    }
+
+    .share__btn {
+      width: 34px;
+      height: 34px;
+      padding: 0;
+      justify-content: center;
+    }
+  }
+
+  &__label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--rb-text-muted);
+    margin-bottom: 0.65rem;
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  &__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.45rem 0.75rem;
+    border-radius: 6px;
+    border: 1px solid var(--rb-border);
+    background: var(--rb-bg-surface);
+    color: var(--rb-text-secondary);
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition);
+
+    svg {
+      flex-shrink: 0;
+    }
+
+    &:hover {
+      border-color: var(--rb-gold);
+      color: var(--rb-gold);
+    }
+
+    &--copied {
+      border-color: var(--rb-gold);
+      color: var(--rb-gold);
+    }
+
+    &--native:hover {
+      background: rgba(201, 162, 39, 0.12);
+    }
+
+    &--whatsapp:hover {
+      border-color: #25d366;
+      color: #25d366;
+    }
+
+    &--facebook:hover {
+      border-color: #1877f2;
+      color: #1877f2;
+    }
+
+    &--twitter:hover {
+      border-color: #e7e9ea;
+      color: #e7e9ea;
+    }
+
+    &--email:hover {
+      border-color: var(--rb-gold);
+      color: var(--rb-gold);
+    }
+  }
+}

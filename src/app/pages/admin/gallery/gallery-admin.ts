@@ -2,6 +2,7 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { ApiService, GalleryPhoto } from '../../../core/services/api.service';
+import { extractApiError } from '../../../core/utils/api.util';
 
 @Component({
   selector: 'app-gallery-admin',
@@ -75,6 +76,11 @@ export class GalleryAdmin implements OnInit {
     const file = input.files?.[0];
     if (!file) return;
 
+    if (file.size > 10 * 1024 * 1024) {
+      this.errorMsg.set('L\'image ne doit pas dépasser 10 Mo');
+      return;
+    }
+
     const reader = new FileReader();
     reader.onload = () => this.imagePreview.set(
       this.sanitizer.bypassSecurityTrustUrl(reader.result as string)
@@ -88,11 +94,18 @@ export class GalleryAdmin implements OnInit {
         this.form.patchValue({ src: res.url });
         this.uploading.set(false);
       },
-      error: (_err: unknown) => {
-        this.errorMsg.set('Erreur lors de l\'upload de l\'image');
+      error: (err) => {
+        this.errorMsg.set(extractApiError(err, 'Erreur lors de l\'upload de l\'image'));
         this.uploading.set(false);
       },
     });
+  }
+
+  onUrlInput(): void {
+    const url = this.form.get('src')?.value;
+    if (url) {
+      this.imagePreview.set(this.sanitizer.bypassSecurityTrustUrl(url));
+    }
   }
 
   save(): void {
@@ -114,7 +127,7 @@ export class GalleryAdmin implements OnInit {
         this.saving.set(false);
         setTimeout(() => this.successMsg.set(''), 3000);
       },
-      error: (_err: unknown) => { this.errorMsg.set('Erreur lors de la sauvegarde'); this.saving.set(false); },
+      error: (err) => { this.errorMsg.set(extractApiError(err, 'Erreur lors de la sauvegarde')); this.saving.set(false); },
     });
   }
 

@@ -1,0 +1,93 @@
+<div class="admin-page">
+  <div class="admin-page__header">
+    <div>
+      <h2 class="admin-page__title">Statistiques &amp; Vues</h2>
+      <p class="admin-page__sub">Comptage des visites et répartition par pays</p>
+    </div>
+    <button class="admin-btn admin-btn--ghost" (click)="load()" type="button">Actualiser</button>
+  </div>
+
+  @if (errorMsg()) {
+    <div class="admin-toast admin-toast--error" role="alert">{{ errorMsg() }}</div>
+  }
+
+  @if (loading()) {
+    <div class="admin-loading">Chargement des statistiques…</div>
+  } @else if (stats()) {
+    <div class="analytics-admin__cards">
+      <div class="analytics-admin__card">
+        <span class="analytics-admin__label">Total vues</span>
+        <strong class="analytics-admin__value">{{ stats()!.total_views | number }}</strong>
+      </div>
+      <div class="analytics-admin__card">
+        <span class="analytics-admin__label">Aujourd'hui</span>
+        <strong class="analytics-admin__value">{{ stats()!.views_today | number }}</strong>
+      </div>
+      <div class="analytics-admin__card">
+        <span class="analytics-admin__label">Cette semaine</span>
+        <strong class="analytics-admin__value">{{ stats()!.views_week | number }}</strong>
+      </div>
+      <div class="analytics-admin__card">
+        <span class="analytics-admin__label">Ce mois</span>
+        <strong class="analytics-admin__value">{{ stats()!.views_month | number }}</strong>
+      </div>
+    </div>
+
+    <div class="analytics-admin__grid">
+      <!-- Countries -->
+      <div class="analytics-admin__panel">
+        <h3 class="analytics-admin__panel-title">Visiteurs par pays</h3>
+        @if (stats()!.by_country.length === 0) {
+          <p class="muted">Aucune donnée pour le moment.</p>
+        } @else {
+          <ul class="analytics-admin__list">
+            @for (row of stats()!.by_country; track row.country_code) {
+              <li class="analytics-admin__list-item">
+                <span class="analytics-admin__country">
+                  <span class="analytics-admin__flag">{{ row.country_code }}</span>
+                  {{ row.country }}
+                </span>
+                <span class="analytics-admin__count">{{ row.count | number }}</span>
+              </li>
+            }
+          </ul>
+        }
+      </div>
+
+      <!-- Pages -->
+      <div class="analytics-admin__panel">
+        <h3 class="analytics-admin__panel-title">Pages les plus visitées</h3>
+        @if (stats()!.by_page.length === 0) {
+          <p class="muted">Aucune donnée pour le moment.</p>
+        } @else {
+          <ul class="analytics-admin__list">
+            @for (row of stats()!.by_page; track row.page_path) {
+              <li class="analytics-admin__list-item">
+                <span class="analytics-admin__path">{{ row.page_path }}</span>
+                <span class="analytics-admin__count">{{ row.count | number }}</span>
+              </li>
+            }
+          </ul>
+        }
+      </div>
+    </div>
+
+    <!-- Daily chart -->
+    @if (stats()!.daily_views.length > 0) {
+      <div class="analytics-admin__panel analytics-admin__panel--wide">
+        <h3 class="analytics-admin__panel-title">Vues des 30 derniers jours</h3>
+        <div class="analytics-admin__chart">
+          @for (day of stats()!.daily_views; track day.date) {
+            <div class="analytics-admin__bar-wrap" [title]="day.date + ' : ' + day.count + ' vues'">
+              <div
+                class="analytics-admin__bar"
+                [style.height.%]="(day.count / maxDailyCount()) * 100"
+              ></div>
+              <span class="analytics-admin__bar-label">{{ day.date.slice(5) }}</span>
+            </div>
+          }
+        </div>
+      </div>
+    }
+  }
+</div>

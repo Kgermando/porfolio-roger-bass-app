@@ -3,7 +3,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ApiService, Work, WorksPage } from '../../../../core/services/api.service';
 
-type Category = 'all' | 'performances' | 'tutoriels' | 'compositions';
+type Category = 'all' | 'performances' | 'tutoriels' | 'compositions' | 'concerts' | 'campagnes' | 'prières' | 'émissions' | 'enseignements';
 
 @Component({
   selector: 'app-works',
@@ -21,6 +21,7 @@ export class WorksSection implements OnInit {
   error = signal(false);
   activeCategory = signal<Category>('all');
   activeVideoId = signal<string | null>(null);
+  activeDirectVideo = signal<string | null>(null);
 
   // Pagination
   readonly limit = 6;
@@ -33,6 +34,11 @@ export class WorksSection implements OnInit {
     { id: 'performances', label: 'Performances' },
     { id: 'tutoriels', label: 'Tutoriels' },
     { id: 'compositions', label: 'Compositions' },
+    { id: 'concerts', label: 'Concerts' },
+    { id: 'campagnes', label: 'Campagnes' },
+    { id: 'prières', label: 'Prières' },
+    { id: 'émissions', label: 'Émissions' },
+    { id: 'enseignements', label: 'Enseignements' },
   ];
 
   ngOnInit(): void {
@@ -102,7 +108,7 @@ export class WorksSection implements OnInit {
 
   /** Extracts the YouTube video ID from a URL, or null if not a video URL */
   getYouTubeId(url: string): string | null {
-    if (!url) return null;
+    if (!url || this.isDirectVideo(url)) return null;
     const patterns = [
       /[?&]v=([a-zA-Z0-9_-]{11})/,
       /youtu\.be\/([a-zA-Z0-9_-]{11})/,
@@ -138,17 +144,39 @@ export class WorksSection implements OnInit {
   }
 
   playVideo(url: string): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+
+    if (this.isDirectVideo(url)) {
+      this.activeDirectVideo.set(url);
+      this.activeVideoId.set(null);
+      document.body.style.overflow = 'hidden';
+      return;
+    }
+
     const id = this.getYouTubeId(url);
-    if (id && isPlatformBrowser(this.platformId)) {
+    if (id) {
       this.activeVideoId.set(id);
+      this.activeDirectVideo.set(null);
       document.body.style.overflow = 'hidden';
     }
   }
 
   closeVideo(): void {
     this.activeVideoId.set(null);
+    this.activeDirectVideo.set(null);
     if (isPlatformBrowser(this.platformId)) {
       document.body.style.overflow = '';
     }
+  }
+
+  isDirectVideo(url: string): boolean {
+    if (!url) return false;
+    const lower = url.toLowerCase();
+    return !lower.includes('youtube.com') && !lower.includes('youtu.be') &&
+      (lower.includes('.mp4') || lower.includes('.webm') || lower.includes('.mov') || lower.includes('backblazeb2.com'));
+  }
+
+  getSafeVideoUrl(url: string): SafeResourceUrl {
+    return this.sanitizer.bypassSecurityTrustResourceUrl(url);
   }
 }

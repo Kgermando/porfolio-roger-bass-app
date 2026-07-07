@@ -38,7 +38,7 @@
             </div>
           }
           <!-- Hidden control stores the B2 URL -->
-          <input type="hidden" formControlName="src" />
+          <input type="text" formControlName="src" placeholder="Ou coller une URL d'image directement" (input)="onUrlInput()" class="admin-url-fallback" />
         </div>
 
         <div class="admin-form__row">

@@ -1,0 +1,173 @@
+@use '../admin-shared';
+
+.articles-admin {
+  &__preview {
+    margin-top: 0.5rem;
+    border-radius: 8px;
+    overflow: hidden;
+    max-width: 200px;
+    border: 1px solid rgba(212, 160, 23, 0.2);
+
+    img {
+      width: 100%;
+      aspect-ratio: 16/9;
+      object-fit: cover;
+      display: block;
+    }
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1rem;
+  }
+
+  &__card {
+    background: #1c1208;
+    border: 1px solid rgba(212, 160, 23, 0.15);
+    border-radius: 10px;
+    overflow: hidden;
+
+    &.draft {
+      opacity: 0.7;
+    }
+  }
+
+  &__cover {
+    width: 100%;
+    aspect-ratio: 16/9;
+    max-height: 120px;
+    object-fit: cover;
+    display: block;
+  }
+
+  &__body {
+    padding: 1rem;
+
+    h4 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      color: #f5e6c8;
+      margin: 0 0 0.5rem;
+    }
+  }
+
+  &__meta {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 0.75rem 0;
+    font-size: 0.78rem;
+  }
+
+  &__actions {
+    display: flex;
+    gap: 0.4rem;
+  }
+}
+
+.admin-url-fallback {
+  margin-top: 0.5rem;
+  background: #120a05;
+  border: 1px solid rgba(212, 160, 23, 0.15);
+  border-radius: 6px;
+  padding: 0.65rem 0.9rem;
+  color: #f5e6c8;
+  font-size: 0.85rem;
+  width: 100%;
+}
+
+.admin-field__hint.uploading {
+  color: #d4a017;
+  font-size: 0.78rem;
+}
+
+.admin-file-input {
+  font-size: 0.85rem;
+  color: #c4a882;
+}
+
+.admin-field--editor {
+  quill-editor {
+    display: block;
+    width: 100%;
+  }
+
+  ::ng-deep {
+    .ql-toolbar.ql-snow {
+      background: #120a05;
+      border: 1px solid rgba(212, 160, 23, 0.2);
+      border-radius: 6px 6px 0 0;
+      font-family: inherit;
+    }
+
+    .ql-container.ql-snow {
+      background: #120a05;
+      border: 1px solid rgba(212, 160, 23, 0.2);
+      border-top: none;
+      border-radius: 0 0 6px 6px;
+      min-height: 280px;
+      font-family: inherit;
+      font-size: 0.95rem;
+      color: #f5e6c8;
+    }
+
+    .ql-editor {
+      min-height: 280px;
+      line-height: 1.75;
+
+      &.ql-blank::before {
+        color: #7a6045;
+        font-style: normal;
+      }
+    }
+
+    .ql-snow .ql-stroke {
+      stroke: #c4a882;
+    }
+
+    .ql-snow .ql-fill {
+      fill: #c4a882;
+    }
+
+    .ql-snow .ql-picker-label {
+      color: #c4a882;
+    }
+
+    .ql-snow .ql-picker-options {
+      background: #1c1208;
+      border-color: rgba(212, 160, 23, 0.2);
+    }
+
+    .ql-snow.ql-toolbar button:hover,
+    .ql-snow .ql-toolbar button:hover,
+    .ql-snow.ql-toolbar button.ql-active,
+    .ql-snow .ql-toolbar button.ql-active {
+      .ql-stroke { stroke: #d4a017; }
+      .ql-fill { fill: #d4a017; }
+    }
+  }
+}
+
+.admin-field__error {
+  color: #e05252;
+  font-size: 0.78rem;
+  margin-top: 0.35rem;
+}
+
+.articles-admin__html-preview {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: #0e0803;
+  border: 1px solid rgba(212, 160, 23, 0.15);
+  border-radius: 8px;
+}
+
+.articles-admin__preview-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #c4a882;
+  margin: 0 0 0.75rem;
+}

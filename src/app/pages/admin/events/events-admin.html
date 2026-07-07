@@ -52,8 +52,8 @@
                 <img [src]="imagePreview()!" alt="Aperçu" loading="lazy" />
               </div>
             }
-            <!-- Hidden form control keeps the B2 URL -->
-            <input type="hidden" formControlName="image_url" />
+            <!-- URL fallback or uploaded B2 URL -->
+            <input type="text" formControlName="image_url" placeholder="Ou coller une URL d'image" (input)="onUrlInput()" class="admin-url-fallback" />
           </div>
         </div>
 

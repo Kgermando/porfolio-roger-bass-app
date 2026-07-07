@@ -3,9 +3,11 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DatePipe, SlicePipe } from '@angular/common';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { ApiService, PortfolioEvent } from '../../../core/services/api.service';
+import { extractApiError } from '../../../core/utils/api.util';
 
 @Component({
   selector: 'app-events-admin',
+  standalone: true,
   templateUrl: './events-admin.html',
   styleUrl: './events-admin.scss',
   imports: [ReactiveFormsModule, DatePipe, SlicePipe],
@@ -98,11 +100,18 @@ export class EventsAdmin implements OnInit {
         this.form.patchValue({ image_url: res.url });
         this.uploading.set(false);
       },
-      error: (_err: unknown) => {
-        this.errorMsg.set('Erreur lors de l\'upload de l\'image');
+      error: (err) => {
+        this.errorMsg.set(extractApiError(err, 'Erreur lors de l\'upload de l\'image'));
         this.uploading.set(false);
       },
     });
+  }
+
+  onUrlInput(): void {
+    const url = this.form.get('image_url')?.value;
+    if (url) {
+      this.imagePreview.set(this.sanitizer.bypassSecurityTrustUrl(url));
+    }
   }
 
   save(): void {
@@ -128,7 +137,7 @@ export class EventsAdmin implements OnInit {
         this.saving.set(false);
         setTimeout(() => this.successMsg.set(''), 3000);
       },
-      error: (_err: unknown) => { this.errorMsg.set('Erreur lors de la sauvegarde'); this.saving.set(false); },
+      error: (err) => { this.errorMsg.set(extractApiError(err, 'Erreur lors de la sauvegarde')); this.saving.set(false); },
     });
   }
 

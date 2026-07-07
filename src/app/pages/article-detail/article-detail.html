@@ -1,0 +1,49 @@
+<app-navbar />
+
+<main class="article-detail section">
+  <div class="container">
+    <a routerLink="/" fragment="enseignements" class="article-detail__back">← Retour aux enseignements</a>
+
+    @if (loading()) {
+      <p class="article-detail__state">Chargement…</p>
+    } @else if (error() || !article()) {
+      <p class="article-detail__state">Enseignement introuvable.</p>
+    } @else {
+      <article class="article-detail__article">
+        @if (article()!.cover_image) {
+          <img
+            [src]="article()!.cover_image"
+            [alt]="article()!.title"
+            class="article-detail__cover"
+            loading="eager"
+          />
+        }
+
+        <header class="article-detail__header">
+          @if (articleDate(article()!); as d) {
+            <time class="article-detail__date" [attr.datetime]="d">{{ d | date:'d MMMM yyyy' }}</time>
+          }
+          <h1 class="article-detail__title">{{ article()!.title }}</h1>
+          <p class="article-detail__author">Par {{ article()!.author }}</p>
+        </header>
+
+        @if (article()!.excerpt) {
+          <p class="article-detail__excerpt">{{ article()!.excerpt }}</p>
+        }
+
+        <div
+          class="rich-content article-detail__body"
+          [innerHTML]="safeContent(article()!.content)"
+        ></div>
+
+        <app-share-buttons
+          [title]="article()!.title"
+          [path]="sharePath(article()!)"
+          [text]="shareText(article()!)"
+        />
+      </article>
+    }
+  </div>
+</main>
+
+<app-footer />

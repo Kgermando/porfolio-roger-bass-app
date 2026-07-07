@@ -1,0 +1,129 @@
+<div class="admin-page">
+  <div class="admin-page__header">
+    <div>
+      <h2 class="admin-page__title">Enseignements</h2>
+      <p class="admin-page__sub">Créez et gérez les articles d'enseignement</p>
+    </div>
+    <button class="admin-btn admin-btn--primary" (click)="openCreate()" type="button">
+      + Nouvel enseignement
+    </button>
+  </div>
+
+  @if (successMsg()) { <div class="admin-toast admin-toast--success">{{ successMsg() }}</div> }
+  @if (errorMsg()) { <div class="admin-toast admin-toast--error" role="alert">{{ errorMsg() }}</div> }
+
+  @if (showForm()) {
+    <div class="admin-form-card">
+      <h3 class="admin-form-card__title">
+        {{ editingArticle() ? 'Modifier l\'enseignement' : 'Nouvel enseignement' }}
+      </h3>
+
+      <form [formGroup]="form" (ngSubmit)="save()" class="admin-form" novalidate>
+        <div class="admin-form__row">
+          <div class="admin-field">
+            <label for="a-title">Titre <span aria-hidden="true">*</span></label>
+            <input id="a-title" type="text" formControlName="title" placeholder="Ex : La foi qui déplace les montagnes" />
+          </div>
+          <div class="admin-field">
+            <label for="a-slug">Slug URL (optionnel)</label>
+            <input id="a-slug" type="text" formControlName="slug" placeholder="la-foi-qui-deplace-les-montagnes" />
+          </div>
+        </div>
+
+        <div class="admin-field">
+          <label for="a-excerpt">Résumé court</label>
+          <textarea id="a-excerpt" formControlName="excerpt" rows="2" placeholder="Un bref résumé pour la liste des enseignements…"></textarea>
+        </div>
+
+        <div class="admin-field admin-field--editor">
+          <label for="a-content">Contenu de l'enseignement <span aria-hidden="true">*</span></label>
+          <quill-editor
+            id="a-content"
+            formControlName="content"
+            [modules]="quillModules"
+            [formats]="quillFormats"
+            placeholder="Rédigez ici le contenu complet…"
+            theme="snow"
+          />
+          @if (form.get('content')?.invalid && form.get('content')?.touched) {
+            <small class="admin-field__error">Le contenu est requis</small>
+          }
+          @if (form.get('content')?.value) {
+            <div class="articles-admin__html-preview">
+              <p class="articles-admin__preview-label">Aperçu du rendu web</p>
+              <div class="rich-content" [innerHTML]="safeContent(form.get('content')!.value)"></div>
+            </div>
+          }
+        </div>
+
+        <div class="admin-field">
+          <label for="a-cover">Image de couverture</label>
+          <input id="a-cover" type="file" accept="image/*" class="admin-file-input" (change)="onCoverSelected($event)" />
+          @if (uploading()) {
+            <small class="admin-field__hint uploading">⏳ Upload en cours…</small>
+          }
+          @if (imagePreview()) {
+            <div class="articles-admin__preview">
+              <img [src]="imagePreview()!" alt="Aperçu couverture" loading="lazy" />
+            </div>
+          }
+          <input type="text" formControlName="cover_image" placeholder="Ou coller une URL d'image" class="admin-url-fallback" />
+        </div>
+
+        <div class="admin-form__row admin-form__row--small">
+          <div class="admin-field">
+            <label for="a-author">Auteur</label>
+            <input id="a-author" type="text" formControlName="author" />
+          </div>
+          <div class="admin-field">
+            <label for="a-order">Ordre</label>
+            <input id="a-order" type="number" formControlName="sort_order" min="0" />
+          </div>
+          <div class="admin-field admin-field--check">
+            <label>
+              <input type="checkbox" formControlName="is_published" />
+              <span>Publier sur le site</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="admin-form__actions">
+          <button type="button" class="admin-btn admin-btn--ghost" (click)="cancel()">Annuler</button>
+          <button type="submit" class="admin-btn admin-btn--primary" [disabled]="form.invalid || saving() || uploading()">
+            {{ saving() ? 'Enregistrement…' : 'Enregistrer' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  }
+
+  @if (loading()) {
+    <div class="admin-loading">Chargement…</div>
+  } @else if (articles().length === 0) {
+    <div class="admin-empty">Aucun enseignement. Cliquez sur « Nouvel enseignement » pour commencer.</div>
+  } @else {
+    <div class="articles-admin__grid">
+      @for (article of articles(); track article.ID) {
+        <article class="articles-admin__card" [class.draft]="!article.is_published">
+          @if (article.cover_image) {
+            <img [src]="article.cover_image" [alt]="article.title" class="articles-admin__cover" loading="lazy" />
+          }
+          <div class="articles-admin__body">
+            <h4>{{ article.title }}</h4>
+            <p class="muted">{{ previewText(article) }}@if (previewText(article).length >= 100) {…}</p>
+            <div class="articles-admin__meta">
+              <span class="admin-badge" [class.active]="article.is_published">
+                {{ article.is_published ? 'Publié' : 'Brouillon' }}
+              </span>
+              <span class="muted">{{ article.view_count }} vues</span>
+            </div>
+            <div class="articles-admin__actions">
+              <button class="admin-btn admin-btn--sm admin-btn--ghost" (click)="openEdit(article)" type="button">Modifier</button>
+              <button class="admin-btn admin-btn--sm admin-btn--danger" (click)="delete(article)" type="button">Supprimer</button>
+            </div>
+          </div>
+        </article>
+      }
+    </div>
+  }
+</div>

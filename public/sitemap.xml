@@ -53,6 +53,14 @@
     <priority>0.8</priority>
   </url>
 
+  <!-- ── Section Enseignements ─────────────────────────────────────────── -->
+  <url>
+    <loc>https://rogerbass.com/#enseignements</loc>
+    <lastmod>2026-07-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
   <!-- ── Section Agenda / Événements ───────────────────────────────────── -->
   <url>
     <loc>https://rogerbass.com/#agenda</loc>

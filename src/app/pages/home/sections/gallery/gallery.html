@@ -1,16 +1,16 @@
 <section class="gallery section section-alt" aria-labelledby="gallery-title">
   <div class="container">
-    <div class="gallery__header aos">
+    <div class="section-header aos">
       <p class="section-badge">Galerie</p>
       <h2 id="gallery-title" class="section-title">
         Photos & <span>Médias</span>
       </h2>
-      <div class="section-divider">
+      <div class="section-divider section-divider--center">
         <span class="section-divider__line"></span>
         <span class="section-divider__dot"></span>
         <span class="section-divider__line"></span>
       </div>
-      <p class="section-subtitle">
+      <p class="section-subtitle section-subtitle--center">
         Des moments capturés qui reflètent l'authenticité et la passion de Roger Bass.
       </p>
     </div>
@@ -24,19 +24,26 @@
         <p class="gallery__state">Aucune photo pour le moment.</p>
       } @else {
         @for (photo of photos(); track photo.ID; let i = $index) {
-          <figure class="gallery__item aos" (click)="open(i)" role="button" tabindex="0" [attr.aria-label]="'Agrandir : ' + photo.caption">
+          <figure
+            class="gallery__item aos"
+            (click)="open(i)"
+            (keydown.enter)="open(i)"
+            role="button"
+            tabindex="0"
+            [attr.aria-label]="'Voir : ' + (photo.caption || photo.alt || 'Photo ' + (i + 1))"
+          >
             <img
               [src]="photo.src"
-              [alt]="photo.alt"
+              [alt]="photo.alt || photo.caption"
               class="gallery__img"
               loading="lazy"
-              width="600"
-              height="800"
+              width="280"
+              height="210"
               (error)="onImgError($event)"
             />
             <figcaption class="gallery__caption">
-              <span>{{ photo.caption }}</span>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <span>{{ photo.caption || photo.alt }}</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                 <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3m13 0h3a2 2 0 0 0 2-2v-3"/>
               </svg>
             </figcaption>
@@ -46,28 +53,80 @@
     </div>
   </div>
 
-  <!-- Lightbox -->
+  <!-- Lightbox slideshow -->
   @if (activeIndex() !== null) {
     <div
       class="gallery__lightbox"
       (click)="close()"
       role="dialog"
       aria-modal="true"
-      [attr.aria-label]="'Photo : ' + photos()[activeIndex()!].caption"
+      [attr.aria-label]="'Galerie photo ' + (activeIndex()! + 1) + ' sur ' + photos().length"
+      (touchstart)="onTouchStart($event)"
+      (touchend)="onTouchEnd($event)"
     >
-      <button class="gallery__lightbox-close" type="button" (click)="close()" aria-label="Fermer">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+      <button class="gallery__lightbox-close" type="button" (click)="close(); $event.stopPropagation()" aria-label="Fermer">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
           <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
         </svg>
       </button>
-      <img
-        [src]="photos()[activeIndex()!].src"
-        [alt]="photos()[activeIndex()!].alt"
-        class="gallery__lightbox-img"
-        (click)="$event.stopPropagation()"
-        (error)="onImgError($event)"
-      />
-      <p class="gallery__lightbox-caption">{{ photos()[activeIndex()!].caption }}</p>
+
+      @if (photos().length > 1) {
+        <button
+          class="gallery__lightbox-nav gallery__lightbox-nav--prev"
+          type="button"
+          (click)="prev($event)"
+          aria-label="Photo précédente"
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="15,18 9,12 15,6"/>
+          </svg>
+        </button>
+        <button
+          class="gallery__lightbox-nav gallery__lightbox-nav--next"
+          type="button"
+          (click)="next($event)"
+          aria-label="Photo suivante"
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="9,6 15,12 9,18"/>
+          </svg>
+        </button>
+      }
+
+      <div class="gallery__lightbox-stage" (click)="$event.stopPropagation()">
+        <img
+          [src]="photos()[activeIndex()!].src"
+          [alt]="photos()[activeIndex()!].alt"
+          class="gallery__lightbox-img"
+          [class.slide-from-left]="slideDirection() === 'left'"
+          [class.slide-from-right]="slideDirection() === 'right'"
+          (error)="onImgError($event)"
+        />
+        <div class="gallery__lightbox-meta">
+          @if (photos()[activeIndex()!].caption || photos()[activeIndex()!].alt) {
+            <p class="gallery__lightbox-caption">
+              {{ photos()[activeIndex()!].caption || photos()[activeIndex()!].alt }}
+            </p>
+          }
+          <span class="gallery__lightbox-counter">{{ activeIndex()! + 1 }} / {{ photos().length }}</span>
+        </div>
+      </div>
+
+      @if (photos().length > 1) {
+        <div class="gallery__lightbox-thumbs" (click)="$event.stopPropagation()">
+          @for (photo of photos(); track photo.ID; let i = $index) {
+            <button
+              type="button"
+              class="gallery__lightbox-thumb"
+              [class.active]="i === activeIndex()"
+              (click)="open(i)"
+              [attr.aria-label]="'Photo ' + (i + 1)"
+            >
+              <img [src]="photo.src" [alt]="photo.alt" loading="lazy" (error)="onImgError($event)" />
+            </button>
+          }
+        </div>
+      }
     </div>
   }
 </section>

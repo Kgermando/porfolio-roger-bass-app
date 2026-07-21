@@ -2,13 +2,16 @@ import { Component, inject, OnInit, signal, PLATFORM_ID, ElementRef } from '@ang
 import { isPlatformBrowser } from '@angular/common';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ApiService, Work, WorksPage } from '../../../../core/services/api.service';
+import { ShareButtons } from '../../../../shared/share-buttons/share-buttons';
 
 type Category = 'all' | 'performances' | 'tutoriels' | 'compositions' | 'concerts' | 'campagnes' | 'prières' | 'émissions' | 'enseignements';
 
 @Component({
   selector: 'app-works',
+  standalone: true,
   templateUrl: './works.html',
   styleUrl: './works.scss',
+  imports: [ShareButtons],
 })
 export class WorksSection implements OnInit {
   private api = inject(ApiService);
@@ -178,5 +181,14 @@ export class WorksSection implements OnInit {
 
   getSafeVideoUrl(url: string): SafeResourceUrl {
     return this.sanitizer.bypassSecurityTrustResourceUrl(url);
+  }
+
+  shareUrl(work: Work): string {
+    if (work.link) return work.link;
+    return 'https://youtube.com/@rogerbassmukendi4992';
+  }
+
+  onShareClick(e: Event): void {
+    e.stopPropagation();
   }
 }

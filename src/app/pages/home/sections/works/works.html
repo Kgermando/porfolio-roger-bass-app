@@ -126,6 +126,15 @@
               <div class="works__card-info">
                 <h3 class="works__card-title">{{ work.title }}</h3>
                 <p class="works__card-desc">{{ work.desc }}</p>
+                <div class="works__card-share" (click)="onShareClick($event)">
+                  <app-share-buttons
+                    [title]="work.title"
+                    path="/"
+                    [directUrl]="shareUrl(work)"
+                    [text]="work.desc"
+                    [card]="true"
+                  />
+                </div>
               </div>
 
             </article>

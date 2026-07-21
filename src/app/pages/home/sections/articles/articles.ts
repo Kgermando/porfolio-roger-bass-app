@@ -8,6 +8,7 @@ import { ShareButtons } from '../../../../shared/share-buttons/share-buttons';
 
 @Component({
   selector: 'app-articles',
+  standalone: true,
   templateUrl: './articles.html',
   styleUrl: './articles.scss',
   imports: [DatePipe, RouterLink, ShareButtons],

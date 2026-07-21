@@ -67,14 +67,8 @@
   }
 
   &__share {
-    position: absolute;
-    bottom: 0.5rem;
-    right: 0.5rem;
-    z-index: 2;
-    padding: 0.2rem;
-    background: rgba(8, 4, 2, 0.75);
-    border: 1px solid var(--rb-border);
-    border-radius: 6px;
+    padding: 0 1rem 1rem;
+    margin-top: auto;
   }
 
   &__cover-wrap {

@@ -168,4 +168,15 @@ export class ArticlesAdmin implements OnInit {
       error: () => this.errorMsg.set('Erreur lors de la suppression'),
     });
   }
+
+  togglePublish(article: Article): void {
+    this.api.adminToggleArticlePublish(article.ID).subscribe({
+      next: () => {
+        this.successMsg.set(article.is_published ? 'Enseignement dépublié' : 'Enseignement publié sur le site !');
+        this.load();
+        setTimeout(() => this.successMsg.set(''), 3000);
+      },
+      error: () => this.errorMsg.set('Erreur lors de la publication'),
+    });
+  }
 }

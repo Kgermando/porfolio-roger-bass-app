@@ -60,6 +60,14 @@ export interface GalleryPhoto {
   sort_order: number;
 }
 
+export interface GalleryPage {
+  data: GalleryPhoto[];
+  total: number;
+  page: number;
+  limit: number;
+  pages: number;
+}
+
 export interface Article {
   ID: number;
   title: string;
@@ -155,9 +163,23 @@ export class ApiService {
     );
   }
 
-  getGallery(): Observable<GalleryPhoto[]> {
-    return this.http.get<GalleryPhoto[]>(`${this.apiUrl}/gallery`).pipe(
-      map(normalizeList),
+  getGallery(page = 1, limit = 8): Observable<GalleryPage> {
+    const params = new HttpParams()
+      .set('page', String(page))
+      .set('limit', String(limit));
+    return this.http.get<GalleryPage | GalleryPhoto[]>(`${this.apiUrl}/gallery`, { params }).pipe(
+      map((res) => {
+        if (Array.isArray(res)) {
+          const data = normalizeList(res);
+          const total = data.length;
+          const pages = Math.max(1, Math.ceil(total / limit));
+          return { data, total, page, limit, pages };
+        }
+        const data = normalizeList(res.data);
+        const total = res.total ?? data.length;
+        const pages = Math.max(1, res.pages ?? Math.ceil(total / limit));
+        return { data, total, page: res.page ?? page, limit: res.limit ?? limit, pages };
+      }),
     );
   }
 
@@ -252,6 +274,10 @@ export class ApiService {
 
   adminUpdateArticle(id: number, article: ArticleInput): Observable<Article> {
     return this.http.put<Article>(`${this.apiUrl}/admin/articles/${id}`, article).pipe(map(normalizeEntity));
+  }
+
+  adminToggleArticlePublish(id: number): Observable<Article> {
+    return this.http.put<Article>(`${this.apiUrl}/admin/articles/${id}/publish`, {}).pipe(map(normalizeEntity));
   }
 
   adminDeleteArticle(id: number): Observable<{ message: string }> {

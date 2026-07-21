@@ -1,14 +1,19 @@
 import { Component, inject, OnInit, signal, PLATFORM_ID, ElementRef, HostListener } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ApiService, GalleryPhoto } from '../../../../core/services/api.service';
+import { ShareButtons } from '../../../../shared/share-buttons/share-buttons';
 
 @Component({
   selector: 'app-gallery',
+  standalone: true,
   templateUrl: './gallery.html',
   styleUrl: './gallery.scss',
+  imports: [ShareButtons],
 })
 export class GallerySection implements OnInit {
   private api = inject(ApiService);
+  private sanitizer = inject(DomSanitizer);
   private platformId = inject(PLATFORM_ID);
   private elRef = inject(ElementRef);
 
@@ -18,23 +23,58 @@ export class GallerySection implements OnInit {
   activeIndex = signal<number | null>(null);
   slideDirection = signal<'left' | 'right' | 'none'>('none');
 
+  readonly limit = 8;
+  page = signal(1);
+  totalPages = signal(1);
+  total = signal(0);
+
   private touchStartX = 0;
 
   ngOnInit(): void {
-    this.api.getGallery().subscribe({
-      next: (data) => {
-        this.photos.set(data);
+    if (isPlatformBrowser(this.platformId)) {
+      this.loadGallery(1);
+    } else {
+      this.loading.set(false);
+    }
+  }
+
+  loadGallery(page = 1): void {
+    this.loading.set(true);
+    this.error.set(false);
+    this.api.getGallery(page, this.limit).subscribe({
+      next: (res) => {
+        this.photos.set(res.data);
+        this.total.set(res.total);
+        this.totalPages.set(Math.max(1, res.pages));
+        this.page.set(res.page);
         this.loading.set(false);
         if (isPlatformBrowser(this.platformId)) {
           setTimeout(() => this.initAosObserver(), 50);
+          this.openFromQueryParam();
         }
       },
       error: () => { this.error.set(true); this.loading.set(false); },
     });
+  }
 
+  goToPage(p: number): void {
+    if (p < 1 || p > this.totalPages()) return;
+    this.close();
+    this.loadGallery(p);
     if (isPlatformBrowser(this.platformId)) {
-      setTimeout(() => this.initAosObserver(), 50);
+      document.getElementById('galerie')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
+  }
+
+  get pageNumbers(): number[] {
+    const total = this.totalPages();
+    const current = this.page();
+    const delta = 2;
+    const range: number[] = [];
+    for (let i = Math.max(1, current - delta); i <= Math.min(total, current + delta); i++) {
+      range.push(i);
+    }
+    return range;
   }
 
   @HostListener('document:keydown', ['$event'])
@@ -60,6 +100,62 @@ export class GallerySection implements OnInit {
     this.elRef.nativeElement
       .querySelectorAll('.aos:not(.visible), .aos-left:not(.visible), .aos-right:not(.visible)')
       .forEach((el: Element) => observer.observe(el));
+  }
+
+  private openFromQueryParam(): void {
+    const params = new URLSearchParams(window.location.search);
+    const mediaId = params.get('galerie');
+    if (!mediaId || this.photos().length === 0) return;
+    const idx = this.photos().findIndex((p) => String(p.ID) === mediaId);
+    if (idx >= 0) {
+      this.open(idx);
+      document.getElementById('galerie')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+
+  isVideo(src: string): boolean {
+    if (!src) return false;
+    const lower = src.toLowerCase();
+    if (lower.includes('youtube.com') || lower.includes('youtu.be')) return true;
+    return !lower.includes('youtube.com') && !lower.includes('youtu.be') &&
+      (lower.includes('.mp4') || lower.includes('.webm') || lower.includes('.mov') ||
+        (lower.includes('backblazeb2.com') && !/\.(jpe?g|png|gif|webp)(\?|$)/i.test(lower)));
+  }
+
+  getYouTubeId(url: string): string | null {
+    if (!url) return null;
+    const patterns = [
+      /[?&]v=([a-zA-Z0-9_-]{11})/,
+      /youtu\.be\/([a-zA-Z0-9_-]{11})/,
+      /\/embed\/([a-zA-Z0-9_-]{11})/,
+    ];
+    for (const pattern of patterns) {
+      const match = url.match(pattern);
+      if (match) return match[1];
+    }
+    return null;
+  }
+
+  getSafeVideoUrl(url: string): SafeResourceUrl {
+    return this.sanitizer.bypassSecurityTrustResourceUrl(url);
+  }
+
+  getSafeEmbedUrl(videoId: string): SafeResourceUrl {
+    return this.sanitizer.bypassSecurityTrustResourceUrl(
+      `https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1`,
+    );
+  }
+
+  mediaTitle(photo: GalleryPhoto): string {
+    return photo.caption || photo.alt || 'Média Roger Bass';
+  }
+
+  shareDirectUrl(photo: GalleryPhoto): string {
+    return photo.src;
+  }
+
+  sharePageParams(photo: GalleryPhoto): Record<string, string> {
+    return { galerie: String(photo.ID) };
   }
 
   open(index: number): void {
@@ -104,6 +200,10 @@ export class GallerySection implements OnInit {
     if (Math.abs(diff) < 50) return;
     if (diff > 0) this.prev();
     else this.next();
+  }
+
+  onShareClick(e: Event): void {
+    e.stopPropagation();
   }
 
   onImgError(e: Event): void {

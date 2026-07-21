@@ -1,11 +1,11 @@
 <div class="admin-page">
   <div class="admin-page__header">
     <div>
-      <h2 class="admin-page__title">Galerie Photos</h2>
-      <p class="admin-page__sub">Gérez les photos affichées dans la section galerie</p>
+      <h2 class="admin-page__title">Galerie Photos & Médias</h2>
+      <p class="admin-page__sub">Gérez les photos et vidéos affichées dans la section galerie</p>
     </div>
     <button class="admin-btn admin-btn--primary" (click)="openCreate()" type="button">
-      + Ajouter une photo
+      + Ajouter un média
     </button>
   </div>
 
@@ -20,11 +20,11 @@
 
       <form [formGroup]="form" (ngSubmit)="save()" class="admin-form" novalidate>
         <div class="admin-field">
-          <label for="g-file">Image <span aria-hidden="true">*</span></label>
+          <label for="g-file">Photo ou vidéo <span aria-hidden="true">*</span></label>
           <input
             id="g-file"
             type="file"
-            accept="image/*"
+            accept="image/*,video/mp4,video/webm,video/quicktime"
             class="admin-file-input"
             (change)="onFileSelected($event)"
           />
@@ -34,11 +34,15 @@
           <!-- Preview -->
           @if (imagePreview()) {
             <div class="gallery-admin__preview">
-              <img [src]="imagePreview()!" alt="Aperçu" loading="lazy" />
+              @if (previewIsVideo()) {
+                <video [src]="imagePreview()!" controls muted playsinline></video>
+              } @else {
+                <img [src]="imagePreview()!" alt="Aperçu" loading="lazy" />
+              }
             </div>
           }
           <!-- Hidden control stores the B2 URL -->
-          <input type="text" formControlName="src" placeholder="Ou coller une URL d'image directement" (input)="onUrlInput()" class="admin-url-fallback" />
+          <input type="text" formControlName="src" placeholder="Ou coller une URL (image ou vidéo)" (input)="onUrlInput()" class="admin-url-fallback" />
         </div>
 
         <div class="admin-form__row">

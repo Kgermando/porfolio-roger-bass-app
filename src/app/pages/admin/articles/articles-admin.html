@@ -118,6 +118,15 @@
               <span class="muted">{{ article.view_count }} vues</span>
             </div>
             <div class="articles-admin__actions">
+              <button
+                class="admin-btn admin-btn--sm"
+                [class.admin-btn--primary]="!article.is_published"
+                [class.admin-btn--ghost]="article.is_published"
+                (click)="togglePublish(article)"
+                type="button"
+              >
+                {{ article.is_published ? 'Dépublier' : 'Publier' }}
+              </button>
               <button class="admin-btn admin-btn--sm admin-btn--ghost" (click)="openEdit(article)" type="button">Modifier</button>
               <button class="admin-btn admin-btn--sm admin-btn--danger" (click)="delete(article)" type="button">Supprimer</button>
             </div>

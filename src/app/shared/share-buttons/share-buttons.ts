@@ -7,6 +7,7 @@ type ShareChannel = 'whatsapp' | 'facebook' | 'twitter' | 'email';
 
 @Component({
   selector: 'app-share-buttons',
+  standalone: true,
   templateUrl: './share-buttons.html',
   styleUrl: './share-buttons.scss',
 })
@@ -15,6 +16,12 @@ export class ShareButtons {
   @Input({ required: true }) path!: string;
   @Input() text = '';
   @Input() compact = false;
+  /** Inline row of icons for card footers — always visible */
+  @Input() card = false;
+  /** When set, shares this URL directly (e.g. media file or YouTube link) */
+  @Input() directUrl?: string;
+  /** Optional query params appended to the share URL */
+  @Input() queryParams?: Record<string, string>;
 
   private platformId = inject(PLATFORM_ID);
 
@@ -28,14 +35,24 @@ export class ShareButtons {
   }
 
   shareUrl(): string {
+    if (this.directUrl) {
+      return this.directUrl;
+    }
     const path = this.path.startsWith('/') ? this.path : `/${this.path}`;
+    let base: string;
     if (environment.production) {
-      return `${SITE_URL}${path}`;
+      base = SITE_URL;
+    } else if (isPlatformBrowser(this.platformId)) {
+      base = window.location.origin;
+    } else {
+      base = SITE_URL;
     }
-    if (isPlatformBrowser(this.platformId)) {
-      return `${window.location.origin}${path}`;
+    let url = `${base}${path}`;
+    if (this.queryParams && Object.keys(this.queryParams).length > 0) {
+      const qs = new URLSearchParams(this.queryParams).toString();
+      url += `?${qs}`;
     }
-    return `${SITE_URL}${path}`;
+    return url;
   }
 
   shareMessage(): string {

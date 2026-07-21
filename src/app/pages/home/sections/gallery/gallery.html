@@ -30,37 +30,123 @@
             (keydown.enter)="open(i)"
             role="button"
             tabindex="0"
-            [attr.aria-label]="'Voir : ' + (photo.caption || photo.alt || 'Photo ' + (i + 1))"
+            [attr.aria-label]="'Voir : ' + mediaTitle(photo)"
           >
-            <img
-              [src]="photo.src"
-              [alt]="photo.alt || photo.caption"
-              class="gallery__img"
-              loading="lazy"
-              width="280"
-              height="210"
-              (error)="onImgError($event)"
-            />
+            @if (isVideo(photo.src)) {
+              <div class="gallery__video-thumb" aria-hidden="true">
+                @if (getYouTubeId(photo.src); as ytId) {
+                  <img
+                    [src]="'https://img.youtube.com/vi/' + ytId + '/hqdefault.jpg'"
+                    [alt]="photo.alt || photo.caption"
+                    class="gallery__img"
+                    loading="lazy"
+                    width="280"
+                    height="210"
+                    (error)="onImgError($event)"
+                  />
+                } @else {
+                  <video [src]="photo.src" muted playsinline preload="metadata" class="gallery__img"></video>
+                }
+                <span class="gallery__play-icon">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+                    <polygon points="5,3 19,12 5,21"/>
+                  </svg>
+                </span>
+              </div>
+            } @else {
+              <img
+                [src]="photo.src"
+                [alt]="photo.alt || photo.caption"
+                class="gallery__img"
+                loading="lazy"
+                width="280"
+                height="210"
+                (error)="onImgError($event)"
+              />
+            }
             <figcaption class="gallery__caption">
               <span>{{ photo.caption || photo.alt }}</span>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                 <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3m13 0h3a2 2 0 0 0 2-2v-3"/>
               </svg>
             </figcaption>
+            <div class="gallery__share" (click)="onShareClick($event)">
+              <app-share-buttons
+                [title]="mediaTitle(photo)"
+                path="/"
+                [directUrl]="shareDirectUrl(photo)"
+                [queryParams]="sharePageParams(photo)"
+                [compact]="true"
+              />
+            </div>
           </figure>
         }
       }
     </div>
+
+    @if (!loading() && !error() && totalPages() > 1) {
+      <nav class="gallery__pagination" aria-label="Pagination de la galerie">
+        <button
+          class="gallery__page-btn gallery__page-btn--arrow"
+          (click)="goToPage(page() - 1)"
+          [disabled]="page() === 1"
+          aria-label="Page précédente"
+          type="button"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="15,18 9,12 15,6"/>
+          </svg>
+        </button>
+
+        @if (pageNumbers[0] > 1) {
+          <button class="gallery__page-btn" (click)="goToPage(1)" type="button" aria-label="Page 1">1</button>
+          @if (pageNumbers[0] > 2) {
+            <span class="gallery__page-ellipsis">…</span>
+          }
+        }
+
+        @for (n of pageNumbers; track n) {
+          <button
+            class="gallery__page-btn"
+            [class.active]="n === page()"
+            (click)="goToPage(n)"
+            type="button"
+            [attr.aria-label]="'Page ' + n"
+            [attr.aria-current]="n === page() ? 'page' : null"
+          >{{ n }}</button>
+        }
+
+        @if (pageNumbers[pageNumbers.length - 1] < totalPages()) {
+          @if (pageNumbers[pageNumbers.length - 1] < totalPages() - 1) {
+            <span class="gallery__page-ellipsis">…</span>
+          }
+          <button class="gallery__page-btn" (click)="goToPage(totalPages())" type="button" [attr.aria-label]="'Page ' + totalPages()">{{ totalPages() }}</button>
+        }
+
+        <button
+          class="gallery__page-btn gallery__page-btn--arrow"
+          (click)="goToPage(page() + 1)"
+          [disabled]="page() === totalPages()"
+          aria-label="Page suivante"
+          type="button"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="9,6 15,12 9,18"/>
+          </svg>
+        </button>
+      </nav>
+    }
   </div>
 
   <!-- Lightbox slideshow -->
   @if (activeIndex() !== null) {
+    @let active = photos()[activeIndex()!];
     <div
       class="gallery__lightbox"
       (click)="close()"
       role="dialog"
       aria-modal="true"
-      [attr.aria-label]="'Galerie photo ' + (activeIndex()! + 1) + ' sur ' + photos().length"
+      [attr.aria-label]="'Galerie média ' + (activeIndex()! + 1) + ' sur ' + photos().length"
       (touchstart)="onTouchStart($event)"
       (touchend)="onTouchEnd($event)"
     >
@@ -75,7 +161,7 @@
           class="gallery__lightbox-nav gallery__lightbox-nav--prev"
           type="button"
           (click)="prev($event)"
-          aria-label="Photo précédente"
+          aria-label="Média précédent"
         >
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
             <polyline points="15,18 9,12 15,6"/>
@@ -85,7 +171,7 @@
           class="gallery__lightbox-nav gallery__lightbox-nav--next"
           type="button"
           (click)="next($event)"
-          aria-label="Photo suivante"
+          aria-label="Média suivant"
         >
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
             <polyline points="9,6 15,12 9,18"/>
@@ -94,21 +180,50 @@
       }
 
       <div class="gallery__lightbox-stage" (click)="$event.stopPropagation()">
-        <img
-          [src]="photos()[activeIndex()!].src"
-          [alt]="photos()[activeIndex()!].alt"
-          class="gallery__lightbox-img"
-          [class.slide-from-left]="slideDirection() === 'left'"
-          [class.slide-from-right]="slideDirection() === 'right'"
-          (error)="onImgError($event)"
-        />
+        @if (isVideo(active.src)) {
+          @if (getYouTubeId(active.src); as ytId) {
+            <iframe
+              [src]="getSafeEmbedUrl(ytId)"
+              class="gallery__lightbox-video gallery__lightbox-video--yt"
+              frameborder="0"
+              allow="accelerometer; autoplay; encrypted-media; picture-in-picture"
+              allowfullscreen
+              [title]="mediaTitle(active)"
+            ></iframe>
+          } @else {
+            <video
+              [src]="getSafeVideoUrl(active.src)"
+              class="gallery__lightbox-video"
+              controls
+              autoplay
+              playsinline
+            ></video>
+          }
+        } @else {
+          <img
+            [src]="active.src"
+            [alt]="active.alt"
+            class="gallery__lightbox-img"
+            [class.slide-from-left]="slideDirection() === 'left'"
+            [class.slide-from-right]="slideDirection() === 'right'"
+            (error)="onImgError($event)"
+          />
+        }
         <div class="gallery__lightbox-meta">
-          @if (photos()[activeIndex()!].caption || photos()[activeIndex()!].alt) {
+          @if (active.caption || active.alt) {
             <p class="gallery__lightbox-caption">
-              {{ photos()[activeIndex()!].caption || photos()[activeIndex()!].alt }}
+              {{ active.caption || active.alt }}
             </p>
           }
           <span class="gallery__lightbox-counter">{{ activeIndex()! + 1 }} / {{ photos().length }}</span>
+        </div>
+        <div class="gallery__lightbox-share" (click)="onShareClick($event)">
+          <app-share-buttons
+            [title]="mediaTitle(active)"
+            path="/"
+            [directUrl]="shareDirectUrl(active)"
+            [queryParams]="sharePageParams(active)"
+          />
         </div>
       </div>
 
@@ -120,9 +235,17 @@
               class="gallery__lightbox-thumb"
               [class.active]="i === activeIndex()"
               (click)="open(i)"
-              [attr.aria-label]="'Photo ' + (i + 1)"
+              [attr.aria-label]="'Média ' + (i + 1)"
             >
-              <img [src]="photo.src" [alt]="photo.alt" loading="lazy" (error)="onImgError($event)" />
+              @if (isVideo(photo.src)) {
+                @if (getYouTubeId(photo.src); as ytId) {
+                  <img [src]="'https://img.youtube.com/vi/' + ytId + '/hqdefault.jpg'" [alt]="photo.alt" loading="lazy" (error)="onImgError($event)" />
+                } @else {
+                  <span class="gallery__thumb-video-icon">▶</span>
+                }
+              } @else {
+                <img [src]="photo.src" [alt]="photo.alt" loading="lazy" (error)="onImgError($event)" />
+              }
             </button>
           }
         </div>

@@ -105,6 +105,7 @@
   }
 
   &__card {
+    position: relative;
     display: flex;
     flex-direction: column;
     background: var(--rb-bg-card);
@@ -265,6 +266,10 @@
     flex-direction: column;
     gap: 0.5rem;
     flex: 1;
+  }
+
+  &__card-share {
+    margin-top: 0.25rem;
   }
 
   &__card-title {

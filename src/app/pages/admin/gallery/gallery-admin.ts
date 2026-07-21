@@ -25,6 +25,7 @@ export class GalleryAdmin implements OnInit {
   editingPhoto = signal<GalleryPhoto | null>(null);
   showForm = signal(false);
   imagePreview = signal<SafeUrl | null>(null);
+  previewIsVideo = signal(false);
 
   form = this.fb.nonNullable.group({
     src: ['', [Validators.required, Validators.maxLength(500)]],
@@ -48,6 +49,7 @@ export class GalleryAdmin implements OnInit {
     this.editingPhoto.set(null);
     this.form.reset({ src: '', alt: '', caption: '', sort_order: 0, is_active: true });
     this.imagePreview.set(null);
+    this.previewIsVideo.set(false);
     this.showForm.set(true);
   }
 
@@ -61,6 +63,7 @@ export class GalleryAdmin implements OnInit {
       is_active: photo.is_active,
     });
     this.imagePreview.set(photo.src ? this.sanitizer.bypassSecurityTrustUrl(photo.src) : null);
+    this.previewIsVideo.set(/\.(mp4|webm|mov)(\?|$)/i.test(photo.src));
     this.showForm.set(true);
   }
 
@@ -68,34 +71,39 @@ export class GalleryAdmin implements OnInit {
     this.showForm.set(false);
     this.editingPhoto.set(null);
     this.imagePreview.set(null);
+    this.previewIsVideo.set(false);
   }
 
-  /** Upload selected image to B2, then store the returned URL in the form */
+  /** Upload selected image or video to B2, then store the returned URL in the form */
   onFileSelected(e: Event): void {
     const input = e.target as HTMLInputElement;
     const file = input.files?.[0];
     if (!file) return;
 
-    if (file.size > 10 * 1024 * 1024) {
-      this.errorMsg.set('L\'image ne doit pas dépasser 10 Mo');
+    const isVideo = file.type.startsWith('video/');
+    const maxSize = isVideo ? 100 * 1024 * 1024 : 10 * 1024 * 1024;
+    if (file.size > maxSize) {
+      this.errorMsg.set(isVideo ? 'La vidéo ne doit pas dépasser 100 Mo' : 'L\'image ne doit pas dépasser 10 Mo');
       return;
     }
 
     const reader = new FileReader();
-    reader.onload = () => this.imagePreview.set(
-      this.sanitizer.bypassSecurityTrustUrl(reader.result as string)
-    );
+    reader.onload = () => {
+      this.imagePreview.set(this.sanitizer.bypassSecurityTrustUrl(reader.result as string));
+      this.previewIsVideo.set(isVideo);
+    };
     reader.readAsDataURL(file);
 
     this.uploading.set(true);
     this.errorMsg.set('');
-    this.api.uploadImage(file).subscribe({
+    const upload$ = isVideo ? this.api.uploadVideo(file) : this.api.uploadImage(file);
+    upload$.subscribe({
       next: (res) => {
         this.form.patchValue({ src: res.url });
         this.uploading.set(false);
       },
       error: (err) => {
-        this.errorMsg.set(extractApiError(err, 'Erreur lors de l\'upload de l\'image'));
+        this.errorMsg.set(extractApiError(err, 'Erreur lors de l\'upload'));
         this.uploading.set(false);
       },
     });
@@ -105,6 +113,7 @@ export class GalleryAdmin implements OnInit {
     const url = this.form.get('src')?.value;
     if (url) {
       this.imagePreview.set(this.sanitizer.bypassSecurityTrustUrl(url));
+      this.previewIsVideo.set(/\.(mp4|webm|mov)(\?|$)/i.test(url));
     }
   }
 

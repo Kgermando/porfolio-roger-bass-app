@@ -2,6 +2,7 @@ import { Component, inject, OnInit, signal, PLATFORM_ID, ElementRef, HostListene
 import { isPlatformBrowser } from '@angular/common';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ApiService, GalleryPhoto } from '../../../../core/services/api.service';
+import { galleryShareQueryParams } from '../../../../core/utils/share.util';
 import { ShareButtons } from '../../../../shared/share-buttons/share-buttons';
 
 @Component({
@@ -32,13 +33,18 @@ export class GallerySection implements OnInit {
 
   ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
-      this.loadGallery(1);
+      const mediaId = new URLSearchParams(window.location.search).get('galerie');
+      if (mediaId) {
+        this.openSharedMediaById(mediaId);
+      } else {
+        this.loadGallery(1);
+      }
     } else {
       this.loading.set(false);
     }
   }
 
-  loadGallery(page = 1): void {
+  loadGallery(page = 1, afterLoad?: () => void): void {
     this.loading.set(true);
     this.error.set(false);
     this.api.getGallery(page, this.limit).subscribe({
@@ -50,10 +56,28 @@ export class GallerySection implements OnInit {
         this.loading.set(false);
         if (isPlatformBrowser(this.platformId)) {
           setTimeout(() => this.initAosObserver(), 50);
-          this.openFromQueryParam();
+          afterLoad?.();
         }
       },
       error: () => { this.error.set(true); this.loading.set(false); },
+    });
+  }
+
+  private openSharedMediaById(mediaId: string): void {
+    this.api.getGalleryPhoto(mediaId, this.limit).subscribe({
+      next: ({ photo, page }) => {
+        this.loadGallery(page, () => {
+          const idx = this.photos().findIndex((p) => String(p.ID) === String(photo.ID));
+          if (idx >= 0) {
+            this.open(idx);
+          } else {
+            this.photos.update((list) => [photo, ...list.filter((p) => p.ID !== photo.ID)]);
+            this.open(0);
+          }
+          this.scrollToGallery();
+        });
+      },
+      error: () => this.loadGallery(1),
     });
   }
 
@@ -62,7 +86,7 @@ export class GallerySection implements OnInit {
     this.close();
     this.loadGallery(p);
     if (isPlatformBrowser(this.platformId)) {
-      document.getElementById('galerie')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      this.scrollToGallery();
     }
   }
 
@@ -102,15 +126,8 @@ export class GallerySection implements OnInit {
       .forEach((el: Element) => observer.observe(el));
   }
 
-  private openFromQueryParam(): void {
-    const params = new URLSearchParams(window.location.search);
-    const mediaId = params.get('galerie');
-    if (!mediaId || this.photos().length === 0) return;
-    const idx = this.photos().findIndex((p) => String(p.ID) === mediaId);
-    if (idx >= 0) {
-      this.open(idx);
-      document.getElementById('galerie')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
+  private scrollToGallery(): void {
+    document.getElementById('galerie')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
   isVideo(src: string): boolean {
@@ -150,12 +167,8 @@ export class GallerySection implements OnInit {
     return photo.caption || photo.alt || 'Média Roger Bass';
   }
 
-  shareDirectUrl(photo: GalleryPhoto): string {
-    return photo.src;
-  }
-
   sharePageParams(photo: GalleryPhoto): Record<string, string> {
-    return { galerie: String(photo.ID) };
+    return galleryShareQueryParams(photo.ID);
   }
 
   open(index: number): void {

@@ -1,8 +1,10 @@
 <app-navbar />
 
-<main class="article-detail section">
+<main class="article-detail section" id="main-content">
   <div class="container">
-    <a routerLink="/" fragment="enseignements" class="article-detail__back">← Retour aux enseignements</a>
+    <nav aria-label="Fil d'Ariane">
+      <a routerLink="/" fragment="enseignements" class="article-detail__back">← Retour aux enseignements</a>
+    </nav>
 
     @if (loading()) {
       <p class="article-detail__state">Chargement…</p>

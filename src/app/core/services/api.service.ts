@@ -68,6 +68,12 @@ export interface GalleryPage {
   pages: number;
 }
 
+export interface GalleryPhotoLookup {
+  photo: GalleryPhoto;
+  page: number;
+  limit: number;
+}
+
 export interface Article {
   ID: number;
   title: string;
@@ -81,6 +87,7 @@ export interface Article {
   view_count: number;
   published_at?: string | null;
   CreatedAt: string;
+  UpdatedAt?: string;
 }
 
 export interface AnalyticsStats {
@@ -183,14 +190,30 @@ export class ApiService {
     );
   }
 
+  getGalleryPhoto(id: number | string, limit = 8): Observable<GalleryPhotoLookup> {
+    return this.http
+      .get<{ photo: GalleryPhoto; page: number; limit: number }>(
+        `${this.apiUrl}/gallery/${encodeURIComponent(String(id))}`,
+        { params: new HttpParams().set('limit', String(limit)) },
+      )
+      .pipe(
+        map((res) => ({
+          photo: normalizeEntity(res.photo),
+          page: res.page,
+          limit: res.limit,
+        })),
+      );
+  }
+
   getArticles(): Observable<Article[]> {
     return this.http.get<Article[]>(`${this.apiUrl}/articles`).pipe(
       map(normalizeList),
     );
   }
 
-  getArticle(slug: string): Observable<Article> {
-    return this.http.get<Article>(`${this.apiUrl}/articles/${encodeURIComponent(slug)}`).pipe(
+  getArticle(slugOrId: string): Observable<Article> {
+    const id = decodeURIComponent(slugOrId.trim());
+    return this.http.get<Article>(`${this.apiUrl}/articles/${encodeURIComponent(id)}`).pipe(
       map(normalizeEntity),
     );
   }

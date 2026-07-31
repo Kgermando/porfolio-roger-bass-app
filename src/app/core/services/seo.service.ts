@@ -9,6 +9,9 @@ export interface SeoData {
   imageAlt?: string;
   url?: string;
   type?: string;
+  publishedTime?: string;
+  author?: string;
+  robots?: string;
   jsonLd?: Record<string, unknown> | Record<string, unknown>[];
 }
 
@@ -45,15 +48,24 @@ export class SeoService {
       this.setTag('name', 'twitter:image:alt', data.imageAlt);
     }
 
-    if (data.url) {
-      const url = absoluteUrl(data.url);
-      this.setTag('property', 'og:url', url);
-      this.setCanonicalUrl(url);
+    const pageUrl = data.url ? absoluteUrl(data.url) : absoluteUrl('/');
+    this.setTag('property', 'og:url', pageUrl);
+    this.setCanonicalUrl(pageUrl);
+
+    const ogType = data.type ?? 'website';
+    this.setTag('property', 'og:type', ogType);
+
+    if (data.publishedTime) {
+      this.setTag('property', 'article:published_time', data.publishedTime);
+    }
+    if (data.author) {
+      this.setTag('property', 'article:author', data.author);
+      this.setTag('name', 'author', data.author);
     }
 
-    if (data.type) {
-      this.setTag('property', 'og:type', data.type);
-    }
+    const robots = data.robots ?? 'index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1';
+    this.setTag('name', 'robots', robots);
+    this.setTag('name', 'googlebot', robots);
 
     if (data.jsonLd) {
       this.setJsonLd(data.jsonLd);

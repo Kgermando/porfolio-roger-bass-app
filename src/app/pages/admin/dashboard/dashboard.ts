@@ -2,6 +2,8 @@ import { Component, inject, signal, OnInit } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { AuthService } from '../../../core/services/auth.service';
+import { SeoService } from '../../../core/services/seo.service';
+import { buildAdminNoIndexSeo } from '../../../core/utils/seo.util';
 
 const PAGE_TITLES: Record<string, string> = {
   analytics: 'Statistiques',
@@ -22,6 +24,7 @@ const PAGE_TITLES: Record<string, string> = {
 export class AdminDashboard implements OnInit {
   auth = inject(AuthService);
   private router = inject(Router);
+  private seo = inject(SeoService);
 
   sidebarOpen = signal(false);
   pageTitle = signal('Tableau de bord');
@@ -36,6 +39,7 @@ export class AdminDashboard implements OnInit {
   ];
 
   ngOnInit(): void {
+    this.seo.update(buildAdminNoIndexSeo('Administration'));
     this.updateTitle(this.router.url);
     this.router.events.pipe(filter((e) => e instanceof NavigationEnd)).subscribe((e) => {
       this.updateTitle((e as NavigationEnd).urlAfterRedirects);

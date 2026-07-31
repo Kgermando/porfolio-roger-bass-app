@@ -1,88 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:xhtml="http://www.w3.org/1999/xhtml"
-        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
-
-  <!-- ── Page d'accueil ─────────────────────────────────────────────────── -->
+<!-- Fallback statique si le serveur Node n’est pas utilisé. En production SSR, /sitemap.xml est généré dynamiquement. -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://rogerbass.com/</loc>
-    <lastmod>2026-05-21</lastmod>
+    <lastmod>2026-07-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
-    <image:image>
-      <image:loc>https://rogerbass.com/images/rogerbass2.jpeg</image:loc>
-      <image:title>Mukendi Kadiayi Roger Bass – Guitariste Professionnel</image:title>
-      <image:caption>Portrait de Roger Bass, guitariste professionnel depuis 2008</image:caption>
-    </image:image>
-    <image:image>
-      <image:loc>https://rogerbass.com/images/rogzrbass1.jpeg</image:loc>
-      <image:title>Roger Bass – Guitariste basse électrique</image:title>
-      <image:caption>Roger Bass tenant sa guitare basse électrique</image:caption>
-    </image:image>
   </url>
-
-  <!-- ── Section À propos ───────────────────────────────────────────────── -->
-  <url>
-    <loc>https://rogerbass.com/#apropos</loc>
-    <lastmod>2026-05-21</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <!-- ── Section Biographie ─────────────────────────────────────────────── -->
-  <url>
-    <loc>https://rogerbass.com/#biographie</loc>
-    <lastmod>2026-05-21</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <!-- ── Section Œuvres / Productions ──────────────────────────────────── -->
-  <url>
-    <loc>https://rogerbass.com/#oeuvres</loc>
-    <lastmod>2026-05-21</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-
-  <!-- ── Section Galerie ────────────────────────────────────────────────── -->
-  <url>
-    <loc>https://rogerbass.com/#galerie</loc>
-    <lastmod>2026-05-21</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <!-- ── Section Enseignements ─────────────────────────────────────────── -->
   <url>
     <loc>https://rogerbass.com/#enseignements</loc>
-    <lastmod>2026-07-07</lastmod>
+    <lastmod>2026-07-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
-
-  <!-- ── Section Agenda / Événements ───────────────────────────────────── -->
-  <url>
-    <loc>https://rogerbass.com/#agenda</loc>
-    <lastmod>2026-05-21</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.9</priority>
-  </url>
-
-  <!-- ── Section Services ───────────────────────────────────────────────── -->
-  <url>
-    <loc>https://rogerbass.com/#services</loc>
-    <lastmod>2026-05-21</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-
-  <!-- ── Section Contact ────────────────────────────────────────────────── -->
-  <url>
-    <loc>https://rogerbass.com/#contact</loc>
-    <lastmod>2026-05-21</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-
 </urlset>

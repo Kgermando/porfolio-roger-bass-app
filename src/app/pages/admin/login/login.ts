@@ -1,7 +1,9 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, OnInit } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
+import { SeoService } from '../../../core/services/seo.service';
+import { buildAdminNoIndexSeo } from '../../../core/utils/seo.util';
 import { extractApiError } from '../../../core/utils/api.util';
 
 @Component({
@@ -11,10 +13,11 @@ import { extractApiError } from '../../../core/utils/api.util';
   styleUrl: './login.scss',
   imports: [ReactiveFormsModule],
 })
-export class AdminLogin {
+export class AdminLogin implements OnInit {
   private fb = inject(FormBuilder);
   private auth = inject(AuthService);
   private router = inject(Router);
+  private seo = inject(SeoService);
 
   loading = signal(false);
   errorMsg = signal('');
@@ -23,6 +26,10 @@ export class AdminLogin {
     username: ['', [Validators.required]],
     password: ['', [Validators.required, Validators.minLength(4)]],
   });
+
+  ngOnInit(): void {
+    this.seo.update(buildAdminNoIndexSeo('Connexion'));
+  }
 
   submit(): void {
     if (this.form.invalid) return;

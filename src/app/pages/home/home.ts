@@ -2,6 +2,7 @@ import { Component, OnInit, inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { SeoService } from '../../core/services/seo.service';
 import { AnalyticsService } from '../../core/services/analytics.service';
+import { buildHomeSeo } from '../../core/utils/seo.util';
 import { Navbar } from '../../shared/navbar/navbar';
 import { Footer } from '../../shared/footer/footer';
 import { HeroSection } from './sections/hero/hero';
@@ -38,76 +39,7 @@ export class Home implements OnInit {
   private platformId = inject(PLATFORM_ID);
 
   ngOnInit(): void {
-    this.seo.update({
-      title: 'Roger Bass | Guitariste & Prédicateur – Mukendi Kadiayi Roger Bass',
-      description:
-        'Portfolio officiel de Mukendi Kadiayi Roger Bass, guitariste professionnel depuis 2008. Vidéos, enseignements, galerie photos, agenda concerts et services musicaux.',
-      image: 'https://rogerbass.com/images/rogerbass2.jpeg',
-      imageAlt: 'Mukendi Kadiayi Roger Bass – Guitariste Professionnel',
-      url: 'https://rogerbass.com/',
-      type: 'website',
-      jsonLd: [
-        {
-          '@context': 'https://schema.org',
-          '@type': 'Person',
-          name: 'Mukendi Kadiayi Roger Bass',
-          alternateName: 'Roger Bass',
-          description:
-            'Guitariste professionnel depuis 2008, maîtrisant guitare solo, accompagnement, basse et synthétiseur.',
-          url: 'https://rogerbass.com',
-          image: 'https://rogerbass.com/images/rogerbass2.jpeg',
-          jobTitle: 'Guitariste Professionnel',
-          email: 'mukendirogerbass@gmail.com',
-          telephone: '+243853993852',
-          birthDate: '1990-12-25',
-          birthPlace: {
-            '@type': 'Place',
-            name: 'Mbujimayi, Kasaï-Oriental, République Démocratique du Congo',
-          },
-          knowsAbout: [
-            'Guitare Solo',
-            'Guitare Basse',
-            'Guitare Accompagnement',
-            'Synthétiseur',
-            'Cours de guitare',
-            'Enseignements édifiants',
-          ],
-          sameAs: [
-            'https://www.facebook.com/rogerbass.mukendikadiayi',
-            'https://youtube.com/@rogerbassmukendi4992',
-          ],
-        },
-        {
-          '@context': 'https://schema.org',
-          '@type': 'WebSite',
-          name: 'Roger Bass Portfolio',
-          url: 'https://rogerbass.com',
-          description:
-            'Portfolio officiel de Mukendi Kadiayi Roger Bass, guitariste professionnel.',
-          inLanguage: 'fr-FR',
-          potentialAction: {
-            '@type': 'SearchAction',
-            target: {
-              '@type': 'EntryPoint',
-              urlTemplate: 'https://rogerbass.com/?q={search_term_string}',
-            },
-            'query-input': 'required name=search_term_string',
-          },
-        },
-        {
-          '@context': 'https://schema.org',
-          '@type': 'BreadcrumbList',
-          itemListElement: [
-            {
-              '@type': 'ListItem',
-              position: 1,
-              name: 'Accueil',
-              item: 'https://rogerbass.com/',
-            },
-          ],
-        },
-      ],
-    });
+    this.seo.update(buildHomeSeo());
 
     this.analytics.trackPageView('/');
 

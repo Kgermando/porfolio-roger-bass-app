@@ -6,11 +6,29 @@ import {
 } from '@angular/ssr/node';
 import express from 'express';
 import { join } from 'node:path';
+import { buildRobotsTxt, buildSitemapXml } from './server/sitemap';
 
 const browserDistFolder = join(import.meta.dirname, '../browser');
+const DEFAULT_API_URL =
+  process.env['API_URL'] ?? 'https://porfolio-roger-bass-api-production.up.railway.app/api';
 
 const app = express();
 const angularApp = new AngularNodeAppEngine();
+
+/** Dynamic sitemap (includes published enseignements from API) */
+app.get('/sitemap.xml', async (_req, res) => {
+  try {
+    const xml = await buildSitemapXml(DEFAULT_API_URL);
+    res.type('application/xml').set('Cache-Control', 'public, max-age=3600').send(xml);
+  } catch {
+    res.status(500).type('text/plain').send('Sitemap unavailable');
+  }
+});
+
+/** robots.txt (consistent with production rules) */
+app.get('/robots.txt', (_req, res) => {
+  res.type('text/plain').set('Cache-Control', 'public, max-age=86400').send(buildRobotsTxt());
+});
 
 /**
  * Example Express Rest API endpoints can be defined here.

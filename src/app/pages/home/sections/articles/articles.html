@@ -26,7 +26,7 @@
         @for (article of articles(); track article.ID) {
           <article class="articles__card aos">
             <a
-              [routerLink]="['/enseignements', article.slug]"
+              [routerLink]="sharePath(article)"
               class="articles__card-link"
               [attr.aria-label]="'Lire : ' + article.title"
             >
@@ -104,7 +104,7 @@
             [path]="sharePath(activeArticle()!)"
             [text]="shareText(activeArticle()!)"
           />
-          <a [routerLink]="['/enseignements', activeArticle()!.slug]" class="articles__full-link" (click)="closePreview()">
+          <a [routerLink]="sharePath(activeArticle()!)" class="articles__full-link" (click)="closePreview()">
             Ouvrir la page complète →
           </a>
         </div>

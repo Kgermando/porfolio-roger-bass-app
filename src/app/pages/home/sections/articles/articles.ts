@@ -4,6 +4,7 @@ import { RouterLink } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { ApiService, Article } from '../../../../core/services/api.service';
 import { formatArticleDate, stripHtml } from '../../../../core/utils/api.util';
+import { articleSharePath } from '../../../../core/utils/share.util';
 import { ShareButtons } from '../../../../shared/share-buttons/share-buttons';
 
 @Component({
@@ -95,7 +96,7 @@ export class ArticlesSection implements OnInit {
   }
 
   sharePath(article: Article): string {
-    return `/enseignements/${article.slug}`;
+    return articleSharePath(article);
   }
 
   shareText(article: Article): string {

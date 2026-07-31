@@ -10,6 +10,19 @@ import { RouterLink } from '@angular/router';
 export class Footer {
   year = new Date().getFullYear();
 
+  sitemapLinks = [
+    {
+      label: 'Sitemap XML',
+      href: '/sitemap.xml',
+      title: 'Plan du site au format XML pour les moteurs de recherche',
+    },
+    {
+      label: 'Robots.txt',
+      href: '/robots.txt',
+      title: 'Directives d’exploration pour les robots d’indexation',
+    },
+  ];
+
   socials = [
     {
       name: 'Facebook',

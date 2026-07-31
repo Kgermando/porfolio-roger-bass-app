@@ -35,6 +35,18 @@
           </ul>
         </nav>
 
+        <!-- Sitemap & SEO -->
+        <nav class="footer__nav" aria-label="Plan du site">
+          <h4 class="footer__heading">Plan du site</h4>
+          <ul>
+            @for (link of sitemapLinks; track link.href) {
+              <li>
+                <a [href]="link.href" [attr.title]="link.title">{{ link.label }}</a>
+              </li>
+            }
+          </ul>
+        </nav>
+
         <!-- Contact -->
         <div class="footer__contact">
           <h4 class="footer__heading">Contact</h4>

@@ -2,8 +2,9 @@ import { Article } from '../services/api.service';
 import { stripHtml } from './api.util';
 import { SeoData } from '../services/seo.service';
 import { articleSharePath } from './share.util';
+import { SITE_URL } from './site.config';
 
-export const SITE_URL = 'https://rogerbass.com';
+export { SITE_URL } from './site.config';
 export const DEFAULT_OG_IMAGE = `${SITE_URL}/images/rogerbass2.jpeg`;
 export const SITE_NAME = 'Roger Bass Portfolio';
 export const DEFAULT_DESCRIPTION =

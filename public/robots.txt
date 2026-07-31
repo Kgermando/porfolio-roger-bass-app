@@ -1,5 +1,5 @@
 # robots.txt — Roger Bass Portfolio
-# https://rogerbass.com
+# https://rogerbass.net
 
 User-agent: *
 Allow: /
@@ -33,4 +33,4 @@ Disallow: /
 User-agent: PetalBot
 Disallow: /
 
-Sitemap: https://rogerbass.com/sitemap.xml
+Sitemap: https://rogerbass.net/sitemap.xml

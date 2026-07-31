@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { SITE_URL } from '../../core/utils/site.config';
 
 @Component({
   selector: 'app-footer',
@@ -13,13 +14,8 @@ export class Footer {
   sitemapLinks = [
     {
       label: 'Sitemap XML',
-      href: '/sitemap.xml',
+      href: `${SITE_URL}/sitemap.xml`,
       title: 'Plan du site au format XML pour les moteurs de recherche',
-    },
-    {
-      label: 'Robots.txt',
-      href: '/robots.txt',
-      title: 'Directives d’exploration pour les robots d’indexation',
     },
   ];
 

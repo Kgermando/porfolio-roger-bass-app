@@ -1,4 +1,4 @@
-const SITE_URL = 'https://rogerbass.com';
+import { SITE_URL } from '../app/core/utils/site.config';
 
 export interface SitemapArticle {
   slug: string;
